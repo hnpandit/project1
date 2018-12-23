@@ -70,26 +70,3 @@ input::placeholder {
     grid-row: 8/9;
     background-color: rgb(53, 78, 78);
 }
-/* ----------------------------ID'S---------------------------- */
-#content {
-    max-width: auto;
-    grid-gap: 1px;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(8, minmax(100px, auto));
-    margin: 0 auto;
-    display: grid;
-}
-#content div {
-    padding: 10px;
-
-}
-
-#loginBtn {
-    float: left;
-    margin: 2px;
-    cursor: pointer;
-}
-
-#search-button {
-    cursor: pointer;
-}
