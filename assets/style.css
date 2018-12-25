@@ -33,7 +33,7 @@ input::placeholder {
 }
 
 #login-button {
-    float: left;
+    float: right;
     margin: 2px;
     cursor: pointer;
     padding: 10px;
