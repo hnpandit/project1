@@ -1,23 +1,25 @@
 $(document).ready(function () {
 
-
-
     // global is an object that holds the global variables
     // drUID is an object that hold the doctor's first name, last name, and uid
     // specialties is an array of specialities the user can search for
 
     let global = {
         validform: true,
-        specialities: ["primary care"],
-        specialty:"",
-        state:"",
-        zipCode:0,
-        insurance:"",
-        doctorObj: {
-            firstName: "",
-            lastName: "",
-            drUID: ""
-        }
+        specialObj: [{ specialty: "internist" }, { specialty: "cardiologist" }, { specialty: "dermatologist" }, { specialty: "oncologist" }],
+        usStates: ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
+            "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+            "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "UT", "VT", "VA",
+            "WA", "WV", "WI", "WY"],
+
+        specialty: "",
+        state: "",
+        zipCode: "",
+        insurance: "",
+        docFirstName: [],
+        docLastName: [],
+        docSlug: [],
+        docUID: []
     }
 
 
@@ -26,165 +28,95 @@ $(document).ready(function () {
 
         // get input from form
 
-        global.specialty = $("#state-input").val().trim();
+        global.specialty = $("#specialist-input").val().trim();
         global.zipCode = $("#zip-input").val().trim();
         global.state = $("#state-input").val().trim();
+        global.state = global.state.toUpperCase();
         global.insurance = $("#insurance-input").val().trim();
 
         //validate input - if an input field is invalid, will return form with error messages for all invalid fields
 
-        validateInput(global.specialty, global.zipCode, global.state);
+        validateInput(global.specialty, global.zipCode, global.state, global.insurance);
 
 
-        // if all entries are search doctor data base using ajax and better doctor api
+        // if all entries are valid, search doctor data base using ajax and better doctor api
 
-        if (state.validform) {
-
-            //set values of train to be pushed to firebase
-
-            state.trainObj.trainName = state.trainName;
-            state.trainObj.destination = state.destination;
-            state.trainObj.frequency = state.freqInMin;
-            state.trainObj.firstTrain = state.firstTrain;
-            state.trainObj.track = state.arrTrack;
-
-
-            // Code for the push
-            database.ref("trains").push(state.trainObj);
-
+        if (global.validform) {
             //empty form values
-            $("#train-name").val("");
-            $("#destination").val("");
-            $("#frequency").val("");
-            $("#first-train").val("");
-            $("#trackNo").val("");
+            $("#specialty-input").val("");
+            $("#state-input").val("");
+            $("#zip-input").val("");
+            $("#insurance-input").val("");
         }
         else {
-            state.validform = true;
+            return;
         }
+        findDoctors(global.specialty, global.state, global.zipCode, global.insurance);
 
     });
 
-    // retrive data from firebase
-    // random generator will give each train it's own id
 
-    database.ref("trains").on("child_added", function (snapshot) {
-        let childAddedTrain = {
-            id: Math.floor(Math.random() * 100000000) + 1,
-            trainName: snapshot.val().trainName,
-            destination: snapshot.val().destination,
-            freqInMin: snapshot.val().frequency,
-            arrTrack: snapshot.val().track,
-            firstTrain: snapshot.val().firstTrain
-        }
-
-        // Check if this object exists in the state array of trains
-        let trainExists = state.trains.find(function (train) {
-            return train.id === childAddedTrain.id;
-        })
-
-        // Push into the array if the train does not exist
-        if (!trainExists) {
-            state.trains.push(childAddedTrain)
-        }
-
-        trainName = snapshot.val().trainName;
-        destination = snapshot.val().destination;
-        freqInMin = snapshot.val().frequency;
-        arrTrack = snapshot.val().track;
-        firstTrain = snapshot.val().firstTrain;
-
-        renderTrains();
-
-        // Handle the errors
-    }, function (errorObject) {
-        console.log("Errors handled: " + errorObject.code);
-
-        setInterval(renderTrains, 60000)
-
-
-    });
 
     // this function is called to validate the input data
 
-    function validateInput(specialty, state, zipCode, insurance) {
+    function validateInput(specialty, zipCode, state, insurance) {
+
+        global.validform = true;
+
+        //check that at least one search item is entered
+        if (specialty == "" && state == "" && zipCode == "" && insurance == "") {
+            global.validform = false;
+            return global.validform;
+        }
+
         //if a field is invalid - valid form is set to false
 
-        // check that train name was entered
+        // if specialty is not blank - check that it is valid 
+        // use fuse.js to check if valid specialty, in case it was spelled incorrectly - looking for a close match
 
-        if (trainName == "") {
-            let errorMsg = "Please Enter Train Name";
-            document.getElementById("trainNameError").innerHTML = errorMsg;
-            state.validform = false;
+        let options = {
+            shouldSort: true,
+            includeScore: true,
+            threshold: 0.6,
+            location: 0,
+            distance: 100,
+            maxPatternLength: 32,
+            minMatchCharLength: 3,
+            keys: [
+                "specialty",
 
-        }
-        else {
-            clearErrMsg("trainNameError");
-        }
-        // check that destination was entered
+            ]
+        };
+        if (specialty !== "") {
+            if (!global.specialObj.includes(specialty)) {
+                // use fuse.js to determine if there is a close match to a specialty
+                let fuse = new Fuse(global.specialObj, options);
+                let fuseResult = fuse.search(specialty);
+                if (fuseResult.length !== 0) {
 
-        if (destination == "") {
-            errorMsg = "Please Enter Destination";
-            document.getElementById("destinationError").innerHTML = errorMsg;
-            state.validform = false;
+                    global.specialty = fuseResult[0].item.specialty;
 
-        }
-        else {
-            clearErrMsg("destinationError");
-        }
-
-        //check to see that first-train is a valid military time between 00:00 - 23:59
-        //note max text size of first-train is 5, therefore position 3 should be a "":"
-
-        timeTrain = moment(firstTrain, "HH:mm");
-        let militChar = firstTrain.charAt(2);
-        errorMsg = "Invalid - time must be entered in military time";
-        if (militChar !== ":") {
-            document.getElementById("firstTrainError").innerHTML = errorMsg;
-            state.validform = false;
-        }
-        else {
-            let isItMilitary = firstTrain.substr(0, 2);
-            if (isItMilitary < 0 || isItMilitary > 23) {
-                document.getElementById("firstTrainError").innerHTML = errorMsg;
-                state.validform = false;
-            }
-            else {
-                isItMilitary = parseInt(firstTrain.substr(3, 2));
-                if (isItMilitary < 0 || isItMilitary > 59) {
-                    document.getElementById("firstTrainError").innerHTML = errorMsg;
-                    state.validform = false;
                 }
                 else {
-                    clearErrMsg("firstTrainError");
-
+                    $("#specialist-input").val("");
+                    global.validform = false;
                 }
             }
         }
+        //check that a valid state was entered
 
-        //check that frequency was entered
-        //check to make sure frequency is not entered as an "e" (undefined) as numeric data can be enter an "e" or zero
-        if (isNaN(freqInMin) || freqInMin === "" || freqInMin === "0") {
-            errorMsg = "Please Enter Frequency -  must be at least 1";
-            document.getElementById("frequencyError").innerHTML = errorMsg;
-            state.validform = false;
-        }
-        else {
-            clearErrMsg("frequencyError");
-        }
+        if (state !== "") {
+            if (!global.usStates.includes(state)) {
+                //     let errorMsg = "Please Enter Specialty";
+                //    document.getElementById("specialty-input") = errorMsg;
+                $("#state-input").val("");
+                console.log("invalid state");
+                global.validform = false;
+            }
 
-        //not required to enter a track number, but if it is must be a number greater than 0
-        if (arrTrack === "0") {
-            errorMsg = "Invalid track number - must be at least 1";
-            document.getElementById("trackError").innerHTML = errorMsg;
-            state.validform = false;
         }
-        else {
-            clearErrMsg("trackError");
-        }
-        return state.validform;
+        return global.validform;
     }
-
 
     //this function is used to clear any error messages
     function clearErrMsg(idName) {
@@ -193,74 +125,105 @@ $(document).ready(function () {
 
     }
 
-    // this function displays the train schedule on the board
-    function renderTrains() {
-        $("#train-table > tbody").empty();
-
-        // save each train from database in array train
-
-        state.trains.forEach(function (train) {
-            let { trainName, destination, freqInMin, nextArrival, arrTrack, firstTrain } = train;
-            let { minToTrain, timeOfNextTrain } = calcTimes(firstTrain, freqInMin);
-
-            //put time on header bar
-            document.getElementById("header-time").innerHTML = moment().format("MM/DD/YYYY hh:mm A");
-
-            // Create new row in train schedule
-            //only create row if train is scheduled to arrive within 30 minutes; 
-            //if minutes to arrive is less than 3, then put that the train is boarding; arrival track defaults to 1 if not entered
-
-            let status = " ";
-            if (minToTrain < 3) {
-                status = "Boarding";
-                if (arrTrack === " ") {
-                    arrTrack = 1;
-                }
-            }
-
-            if (minToTrain <= 30) {
-                let trainRow = $("<tr>").append(
-                    $("<td>").text(trainName),
-                    $("<td>").text(destination),
-                    //        $("<td>").text(freqInMin),
-                    $("<td>").text(timeOfNextTrain),
-                    $("<td>").text(minToTrain),
-                    $("<td>").text(arrTrack),
-                    $("<td>").text(status),
-                );
-
-
-                // Append the new row to the table
-                $("#train-table > tbody").append(trainRow);
-
-            }
-
-        });
-    }
-
-    // this function calculates the number of minutes away and next arrival time
-
-    function calcTimes(firstTrain, freqInMin) {
-        let timeTrain = moment(firstTrain, "HH:mm");
-        let currentTime = moment();
-        let diffTime = moment().diff(moment(timeTrain, "minutes"));
-        let tRemainder = diffTime % freqInMin;
-
-        // determine if first train time is after current time
-        // to determine how many minutes away and next arrival time
-
-        if (timeTrain > currentTime) {
-            minToTrain = moment(timeTrain).diff(moment(), "minutes");
-            timeOfNextTrain = moment(timeTrain).format("hh:mm A");
-            return { minToTrain: minToTrain, timeOfNextTrain: timeOfNextTrain }
+    function findDoctors(specialty, state, zipCode, insurance) {
+        // create query data to be searched in api
+        let query = " ";
+        if (specialty !== "") {
+            console.log("specialty " + specialty);
+            query = specialty;
         }
         else {
-            minToTrain = freqInMin - tRemainder;
-            timeOfNextTrain = moment().add(minToTrain, "minutes").format("h:mm A");
-            return { minToTrain: minToTrain, timeOfNextTrain: timeOfNextTrain }
+            query = "";
+        }
+        console.log("query " + query);
+        if (zipCode !== " ") {
+            if (query !== " ") {
+                query = query + " " + zipCode;
+            }
+            else {
+                query = zipCode;
+
+            }
+        }
+        if (insurance !== " ") {
+            if (query !== " ") {
+                query = query + insurance;
+            }
+            else {
+                query = insurance;
+            }
         }
 
-    }
+        let queryURL = "https://api.betterdoctor.com/2016-03-01/doctors?specialty_uid=" + specialty +
+            "&location=" + state + "&query=" + query + "&skip=0&limit=20&user_key=c73e643548e8388f4f7cf67fbc5fbc38";
+        console.log(queryURL);
+        $.ajax({
+            url: queryURL,
+            method: "GET"
 
+            // data gets back from API
+
+        }).then(function (response) {
+
+            // data from API in results
+            //maximum number of info wanted for each character is 20 doctors
+
+            $("#results").empty();
+
+            let results = response.data;
+            // check that data was obtained, if no data obtained send message
+            if (results.length === 0) {
+                $("#results").text("No doctors found");
+                return;
+            }
+            let maxLength = 20;
+            if (results.length < 20) {
+                maxLength = results.length;
+            }
+            let docDiv = $("<div>");
+
+            // retrieve data from api to display
+            //save doctor's name, UID, and slug in order to retrieve additional information if doctor is selected
+
+            for (let i = 0; i < maxLength; i++) {
+                let docImg = $("<img id='imgStyle'>");
+                docImg.addClass("doc-button doctor doc-pic-size");
+                docImg.attr("data-still", results[i].profile.image_url);
+                docImg.attr("src", results[i].profile.image_url);
+
+
+                let drFirstName = results[i].profile.first_name.trim();
+                global.docFirstName.push(drFirstName);
+                let drLastName = results[i].profile.last_name.trim();
+                global.docLastName.push(drLastName);
+                let drSlug = results[i].profile.slug;
+                global.docSlug.push(drSlug);
+                let drUID = results[i].uid;
+                global.docUID.push(drUID);
+                let street = results[i].practices[0].visit_address.street;
+                let city = results[i].practices[0].visit_address.city;
+                let state = results[i].practices[0].visit_address.state;
+                let zipCode = results[i].practices[0].visit_address.zip;
+                let rating = results[i].ratings;
+                if (rating = " ") {
+                    rating = "No reviews";
+                }
+                else {
+                    rating = rating + " stars";
+                }
+
+
+                let p1 = $("<p class='para'>").text(drFirstName + " " + drLastName);
+                let p2 = $("<p class='para'>").text(street);
+                let p3 = $("<p class='para'>").text(city + "," + state + " " + zipCode);
+                let p4 = $("<p class='para'>").text("Rating: " + rating);
+
+                docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(p4);
+            }
+            $("#results").append(docDiv);
+        });
+
+
+    }
 
 });
