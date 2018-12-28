@@ -105,6 +105,8 @@ $(document).ready(function () {
         }
         //check that a valid state was entered
 
+        //check that a valid state was entered
+
         if (state !== "") {
             if (!global.usStates.includes(state)) {
                 //     let errorMsg = "Please Enter Specialty";
@@ -113,7 +115,6 @@ $(document).ready(function () {
                 console.log("invalid state");
                 global.validform = false;
             }
-
         }
         return global.validform;
     }
@@ -143,87 +144,95 @@ $(document).ready(function () {
             else {
                 query = zipCode;
 
+                let results = response.data;
+                // check that data was obtained, if no data obtained send message
+                if (results.length === 0) {
+                    $("#results").text("No doctors found");
+                    return;
+                }
             }
-        }
-        if (insurance !== " ") {
-            if (query !== " ") {
-                query = query + insurance;
-            }
-            else {
-                query = insurance;
-            }
-        }
-
-        let queryURL = "https://api.betterdoctor.com/2016-03-01/doctors?specialty_uid=" + specialty +
-            "&location=" + state + "&query=" + query + "&skip=0&limit=20&user_key=c73e643548e8388f4f7cf67fbc5fbc38";
-        console.log(queryURL);
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-
-            // data gets back from API
-
-        }).then(function (response) {
-
-            // data from API in results
-            //maximum number of info wanted for each character is 20 doctors
-
-            $("#results").empty();
-
-            let results = response.data;
-            // check that data was obtained, if no data obtained send message
-            if (results.length === 0) {
-                $("#results").text("No doctors found");
-                return;
-            }
-            let maxLength = 20;
-            if (results.length < 20) {
-                maxLength = results.length;
-            }
-            let docDiv = $("<div>");
-
-            // retrieve data from api to display
-            //save doctor's name, UID, and slug in order to retrieve additional information if doctor is selected
-
-            for (let i = 0; i < maxLength; i++) {
-                let docImg = $("<img id='imgStyle'>");
-                docImg.addClass("doc-button doctor doc-pic-size");
-                docImg.attr("data-still", results[i].profile.image_url);
-                docImg.attr("src", results[i].profile.image_url);
-
-
-                let drFirstName = results[i].profile.first_name.trim();
-                global.docFirstName.push(drFirstName);
-                let drLastName = results[i].profile.last_name.trim();
-                global.docLastName.push(drLastName);
-                let drSlug = results[i].profile.slug;
-                global.docSlug.push(drSlug);
-                let drUID = results[i].uid;
-                global.docUID.push(drUID);
-                let street = results[i].practices[0].visit_address.street;
-                let city = results[i].practices[0].visit_address.city;
-                let state = results[i].practices[0].visit_address.state;
-                let zipCode = results[i].practices[0].visit_address.zip;
-                let rating = results[i].ratings;
-                if (rating = " ") {
-                    rating = "No reviews";
+            if (insurance !== " ") {
+                if (query !== " ") {
+                    query = query + insurance;
                 }
                 else {
-                    rating = rating + " stars";
+                    query = insurance;
                 }
-
-
-                let p1 = $("<p class='para'>").text(drFirstName + " " + drLastName);
-                let p2 = $("<p class='para'>").text(street);
-                let p3 = $("<p class='para'>").text(city + "," + state + " " + zipCode);
-                let p4 = $("<p class='para'>").text("Rating: " + rating);
-
-                docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(p4);
             }
-            $("#results").append(docDiv);
-        });
+
+            let queryURL = "https://api.betterdoctor.com/2016-03-01/doctors?specialty_uid=" + specialty +
+                "&location=" + state + "&query=" + query + "&skip=0&limit=20&user_key=c73e643548e8388f4f7cf67fbc5fbc38";
+            console.log(queryURL);
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+
+                // data gets back from API
+
+            }).then(function (response) {
+
+                // data from API in results
+                //maximum number of info wanted for each character is 10
+                //get still picture, animated picture, title and rating
+                //empty images to remove previous character images
+
+                $("#results").empty();
+
+                let results = response.data;
+                // check that data was obtained, if no data obtained send message
+                if (results.length === 0) {
+                    $("#results").text("No doctors found");
+                    return;
+                }
+                let maxLength = 20;
+                if (results.length < 20) {
+                    maxLength = results.length;
+                }
+                let docDiv = $("<div>");
+
+                // retrieve data from api to display
+                //save doctor's name, UID, and slug in order to retrieve additional information if doctor is selected
+
+                for (let i = 0; i < maxLength; i++) {
+                    let docImg = $("<img id='imgStyle'>");
+                    docImg.addClass("doc-button doctor doc-pic-size");
+                    docImg.attr("data-still", results[i].profile.image_url);
+                    docImg.attr("src", results[i].profile.image_url);
 
 
+                    let drFirstName = results[i].profile.first_name.trim();
+                    global.docFirstName.push(drFirstName);
+                    let drLastName = results[i].profile.last_name.trim();
+                    global.docLastName.push(drLastName);
+                    let drSlug = results[i].profile.slug;
+                    global.docSlug.push(drSlug);
+                    let drUID = results[i].uid;
+                    global.docUID.push(drUID);
+                    console.log("uid " + drUID);
+                    let street = results[i].practices[0].visit_address.street;
+                    let city = results[i].practices[0].visit_address.city;
+                    let state = results[i].practices[0].visit_address.state;
+                    let zipCode = results[i].practices[0].visit_address.zip;
+                    let rating = results[i].ratings;
+                    if (rating = " ") {
+                        rating = "No reviews";
+                    }
+                    else {
+                        rating = rating + " stars";
+                    }
+
+
+                    let p1 = $("<p class='para'>").text(drFirstName + " " + drLastName);
+                    let p2 = $("<p class='para'>").text(street);
+                    let p3 = $("<p class='para'>").text(city + "," + state + " " + zipCode);
+                    let p4 = $("<p class='para'>").text("Rating: " + rating);
+
+                    docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(p4);
+                }
+                $("#results").append(docDiv);
+            });
+
+
+        }
     }
-
 });
