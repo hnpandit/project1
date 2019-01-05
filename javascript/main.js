@@ -333,8 +333,9 @@ $(document).ready(function () {
                 //    docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(ratingImg).append("<br><br>");
                 docDiv.append(ratingImg).append("<br><br>");
             }
+            $("#results").append(docDiv);
 
         }
-        $("#results").append(docDiv);
+        //        $("#results").append(docDiv);
     }
 });
