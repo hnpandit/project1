@@ -1,35 +1,19 @@
 $(document).ready(function () {
 
-    // state is an object that holds the global variables
+    // global is an object that holds the global variables
     // drUID is an object that hold the doctor's first name, last name, and uid
     // specialties is an array of specialities the user can search for
 
-    let state = {
+    let global = {
         validform: true,
-        specialObj: [
-            { specialty: "internist" }, { specialty: "cardiologist" },
-            { specialty: "dermatologist" }, { specialty: "oncologist" },
-            { specialty: "urologist" }, { specialty: "allergist" },
-            { specialty: "obgyn" }, { specialty: "chiropractor" },
-            { specialty: "radiologist" }, { specialty: "psychologist" },
-            { specialty: "dentist" }, { specialty: "pediatrician" },
-            { specialty: "psychiatrist" }, { specialty: "physical-therapist" },
-            { specialty: "nutritionist" }, { specialty: "obstetrics-gynecologist" },
-            { specialty: "occupational-therapist" }, { specialty: "neurosurgeon" },
-            { specialty: "opthalmologist" }, { specialty: "dietitian" },
-            { specialty: "family-practioner" }, { specialty: "orthopedist" },
-            { specialty: "neurologist" }, { specialty: "endocrinologist" },
-            { specialty: "orthodontist" }, { specialty: "optometrist" },
-            { specialty: "general-practitioner" }, { specialty: "general-surgeon" },
-            { specialty: "gynecologist" }, { specialty: "immunopathologist" },
-            { specialty: "podiatrist" }, { specialty: "gastroenterologist" }],
+        specialObj: [{ specialty: "internist" }, { specialty: "cardiologist" }, { specialty: "dermatologist" }, { specialty: "oncologist" }],
         usStates: ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
             "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
             "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "UT", "VT", "VA",
             "WA", "WV", "WI", "WY"],
 
         specialty: "",
-        stateCode: "",
+        state: "",
         zipCode: "",
         insurance: "",
         docName: [],
@@ -40,28 +24,24 @@ $(document).ready(function () {
     $("#search-button").on("click", function (event) {
         event.preventDefault();
 
-        //empty doctor name and npi arrays
-        for (let i = state.docName.length; i > 0; i--) {
-            state.docName.pop();
-            state.docNPI.pop();
-        }
         // get input from form
 
-        state.specialty = $("#specialist-input").val().trim();
-        state.zipCode = $("#zip-input").val().trim();
-        state.stateCode = $("#state-input").val().trim();
-        state.stateCode = state.stateCode.toUpperCase();
-        state.insurance = $("#insurance-input").val().trim();
+        global.specialty = $("#specialist-input").val().trim();
+        global.zipCode = $("#zip-input").val().trim();
+        global.state = $("#state-input").val().trim();
+        global.state = global.state.toUpperCase();
+        global.insurance = $("#insurance-input").val().trim();
 
         //validate input - if an input field is invalid, will return form with error messages for all invalid fields
 
-        validateInput(state.specialty, state.zipCode, state.stateCode, state.insurance);
+        validateInput(global.specialty, global.zipCode, global.state, global.insurance);
 
 
         // if all entries are valid, search doctor data base using ajax and better doctor api
 
-        if (state.validform) {
-            $("#specialist-input").val("");
+        if (global.validform) {
+            //empty form values
+            $("#specialty-input").val("");
             $("#state-input").val("");
             $("#zip-input").val("");
             $("#insurance-input").val("");
@@ -69,35 +49,17 @@ $(document).ready(function () {
         else {
             return;
         }
-
-
-        findDoctors(state.specialty, state.stateCode, state.zipCode, state.insurance);
-        $("#map").empty();
-        $("#map").append("Map");
-
+        findDoctors(global.specialty, global.state, global.zipCode, global.insurance);
     });
-
-    //get all doctor information
-
     $("#results").on("click", ".doctor", function () {
+
         // get value of doctor clicked to determine which doctor to get additional info for using NPI number
         //search better doctors using NPI to get doctor information
-
         let docValue = $(this).attr("value");
-        let drName = state.docName[docValue];
-        let drNPI = state.docNPI[docValue];
-        console.log(docValue + " " + drName + " " + drNPI);
-        getDoctorInfo(drNPI, drName);
+        let drName = docName[docValue];
+        let drNPI = docNPI[docValue];
 
-
-
-    });
-
-
-    function getDoctorInfo(drNPI, drName) {
-        console.log("in get doctor " + drNPI + " " + drName);
         let queryURL = "https://api.betterdoctor.com/2016-03-01/doctors/npi/" + drNPI + "?user_key=c73e643548e8388f4f7cf67fbc5fbc38";
-        console.log(queryURL);
         $.ajax({
             url: queryURL,
             method: "GET"
@@ -105,130 +67,73 @@ $(document).ready(function () {
             // data gets back from API
 
         }).then(function (response) {
+
             // data from API in results
             // only one doctor can be returned as api search is on NPI
 
+            $("#doctorInfo").empty();
             let results = response.data;
             let docDiv = $("<div>");
-            let docImg = $("<img id='imgStyle'>");
-            docImg.addClass("doctor doc-pic-size");
-            docImg.attr("doc-photo", results.profile.image_url);
-            docImg.attr("src", results.profile.image_url);
-            //            let p1 = $("<p class='para'>").append("<a href='indexdr.html' target='_blank'>").text(drName);
-            let p1 = $("<p>").text(drName);
-            docDiv = docDiv.append(docImg).append(p1);
+            let p1 = $("<p class='para'>").text(drName);
+            docDiv = docDiv.append(p1);
 
             // set up doctor address
-            let practiceLength = results.practices.length;
+
+            let practiceLength = results[0].practices.length;
             let street = " ";
             let city = " ";
             let state = " ";
             let zipCode = " ";
-            console.log("pracdtice length" + practiceLength);
             if (practiceLength !== 0) {
                 for (let i = 0; i < practiceLength; i++) {
-                    let street = results.practices[i].visit_address.street;
-                    let city = results.practices[i].visit_address.city;
-                    let state = results.practices[i].visit_address.state;
-                    let zipCode = results.practices[i].visit_address.zip;
+                    let street = results[0].practices[i].visit_address.street;
+                    let city = results[0].practices[i].visit_address.city;
+                    let state = results[0].practices[i].visit_address.state;
+                    let zipCode = results[0].practices[i].visit_address.zip;
                     let p2 = $("<p class='para'>").text(street);
                     let p3 = $("<p class='para'>").text(city + "," + state + " " + zipCode);
-                    console.log(street + city + state + zipCode);
-
                     docDiv = docDiv.append(p2).append(p3);
 
                     //set up phone numbers
-                    let phoneLength = results.practices[i].phones.length;
-                    let phoneNo = "";
+                    let phoneLength = results[0].practices[i].phones.length;
                     if (phoneLength !== 0) {
                         for (let j = 0; j < phoneLength; j++) {
-                            let phoneType = results.practices[i].phones[j].type.trim();
-                            let phoneNo = results.practices[i].phones[j].number.trim();
-                            phoneNo = "(" + phoneNo.substr(0, 3) + ")" + phoneNo.substr(3, 3) + "-" + phoneNo.substr(6, 4);
-                            let p4 = $("<p class='para'>").text(phoneType + ": " + phoneNo);
+                            let phoneType = results[0].practices[i].phones[j].type;
+                            let phoneNo = results[0].practices[i].phones[j].number;
+                            formatPhoneNo(phoneNo);
+                            let p4 = $("<p class='para'>").text(phoneNo);
                             docDiv = docDiv.append(p4);
-                            console.log(phoneType + ": " + phoneNo);
-
                         }
                     }
                     //set up office hours
-                    let offHrLength = results.practices[i].office_hours.length;
+                    let offHrLength = results[0].practices[i].office_hours.length;
                     if (offHrLength !== 0) {
                         for (j = 0; j < offHrLength; j++) {
-                            let p5 = $("<p class ='para'>").text(results.practices[i].office_hours[j]);
+                            let p5 = $("<p class ='para'>").text(results[0].practices[i].office_hours[j]);
                             docDiv = docDiv.append(p5);
-                            console.log(results.practices[i].office_hours[j]);
                         }
                     }
                 }
             }
-            // obtain specialties
-            console.log("specialty length " + results.specialties.length);
-            if (results.specialties.length !== 0) {
-                p5 = $("<p class ='para'>").text("Specialties: ");
-                docDiv = docDiv.append(p5);
-                for (i = 0; i < results.specialties.length; i++) {
-                    console.log("specialties: " + results.specialties[i].name);
-                    docDiv = docDiv.append(results.specialties[i].name).append("<br>");
-                }
-            }
-            //obtain education
-            if (results.educations.length !== 0) {
-                p5 = $("<p class ='para'>").text("Education: ");
-                docDiv = docDiv.append(p5);
-                for (i = 0; i < results.educations.length; i++) {
-                    console.log("education  " + results.educations[i].school);
-                    docDiv = docDiv.append(results.educations[i].school).append("<br>");
-                }
-            }
 
-            // obtain bio
-            p5 = $("<p class ='para'>").text("Bio: ");
-            docDiv = docDiv.append(p5);
-            console.log(results.profile.bio);
-            docDiv = docDiv.append(results.profile.bio).append("<br>");
+        });
+    });
+    function formatPhoneNo() { };
 
-            // obtain languages
-            if (results.profile.languages.length !== 0) {
-                p5 = $("<p class ='para'>").text("Languages: ");
-                docDiv = docDiv.append(p5);
-                for (i = 0; i < results.profile.languages.length; i++) {
-                    console.log("languages " + results.profile.languages[i].name);
-                    docDiv = docDiv.append(results.profile.languages[i].name);
-                }
-            }
 
-            //obtain insurance plans
-            if (results.insurances.length !== 0) {
-                p5 = $("<p class ='para'>").text("Insurance: ");
-                docDiv = docDiv.append(p5);
-                for (i = 0; i < results.insurances.length; i++) {
-                    console.log(results.insurances[i].insurance_plan.name);
-                    docDiv = docDiv.append(results.insurances[i].insurance_plan.name);
-                }
-            }
-            //        $("#results").empty();
-            //        $("#results").append(docDiv);
-            $("#map").empty();
-            $("#map").append(docDiv);
 
-        })
-            .catch(function (error) {
-                console.log("error with request" + error);
-                return;
-            });
-    }
+
 
     // this function is called to validate the input data
 
-    function validateInput(specialty, zipCode, stateCode, insurance) {
+    function validateInput(specialty, zipCode, state, insurance) {
 
-        state.validform = true;
+        global.validform = true;
 
         //check that at least one search item is entered
-        if (specialty == "" && stateCode == "" && zipCode == "" && insurance == "") {
-            state.validform = false;
-            return state.validform;
+        if (specialty == "" && state == "" && zipCode == "" && insurance == "") {
+            global.validform = false;
+            return global.validform;
         }
 
         //if a field is invalid - valid form is set to false
@@ -250,32 +155,32 @@ $(document).ready(function () {
             ]
         };
         if (specialty !== "") {
-            //        if ( state.specialObj.includes(specialty)) {
+            //        if (!global.specialObj.includes(specialty)) {
             // use fuse.js to determine if there is a close match to a specialty
-            let fuse = new Fuse(state.specialObj, options);
+            let fuse = new Fuse(global.specialObj, options);
             let fuseResult = fuse.search(specialty);
             if (fuseResult.length !== 0) {
 
-                state.specialty = fuseResult[0].item.specialty;
-                console.log("specialty " + state.specialty);
+                global.specialty = fuseResult[0].item.specialty;
+
             }
             else {
                 $("#specialist-input").val("");
-                state.validform = false;
+                global.validform = false;
             }
             //        }
         }
         //check that a valid state was entered
-        console.log(stateCode);
-        if (stateCode !== "") {
-            if (!state.usStates.includes(stateCode)) {
+
+        if (state !== "") {
+            if (!global.usStates.includes(state)) {
                 //     let errorMsg = "Please Enter Specialty";
                 //    document.getElementById("specialty-input") = errorMsg;
                 $("#state-input").val("");
-                state.validform = false;
+                global.validform = false;
             }
         }
-        return state.validform;
+        return global.validform;
     }
 
     //this function is used to clear any error messages
@@ -285,11 +190,12 @@ $(document).ready(function () {
 
     }
 
-    function findDoctors(specialty, stateCode, zipCode, insurance) {
+    function findDoctors(specialty, state, zipCode, insurance) {
         // create query field data to be searched in api
 
         let query = "";
         if (specialty !== "") {
+            console.log("specialty " + specialty);
             query = specialty;
         }
         else {
@@ -313,7 +219,7 @@ $(document).ready(function () {
         }
 
         let queryURL = "https://api.betterdoctor.com/2016-03-01/doctors?specialty_uid=" + specialty +
-            "&location=" + stateCode + "&query=" + query + "&skip=0&limit=20&sort=distance-desc&user_key=c73e643548e8388f4f7cf67fbc5fbc38";
+            "&location=" + state + "&query=" + query + "&skip=0&limit=20&sort=distance-desc&user_key=c73e643548e8388f4f7cf67fbc5fbc38";
         $.ajax({
             url: queryURL,
             method: "GET"
@@ -339,16 +245,11 @@ $(document).ready(function () {
             // render doctors
             renderDoctors(results);
 
-        })
-            .catch(function (error) {
-                console.log("error finding doctors" + error);
-                return;
-            });
+        });
+
+
+
     }
-
-
-
-
     // this function renders the doctors on the main page
 
     function renderDoctors(results) {
@@ -364,41 +265,43 @@ $(document).ready(function () {
 
         for (let i = 0; i < maxLength; i++) {
             let docImg = $("<img id='imgStyle'>");
-            docImg.addClass("doctor doc-pic-size");
+            docImg.addClass("doc-button doctor doc-pic-size");
             docImg.attr("doc-photo", results[i].profile.image_url);
             docImg.attr("src", results[i].profile.image_url);
             docImg.attr("value", i);
 
+
             let drFirstName = results[i].profile.first_name.trim();
             let drLastName = results[i].profile.last_name.trim();
             let drFullName = drFirstName + " " + drLastName;
-            let docName = $("<p>");
-            //        let docName = $("<a href='indexdr.html' target='_blank'>");
-
+            let docName = $("<a href='indexdr.html'>");
+            //    let docName = $("<p id=docName-style>");
             docName.addClass("doctor doctorName");
             docName.attr("doc-name", drFullName);
             docName.attr("value", i);
-            state.docName.push(drFullName);
-            state.docNPI.push(results[i].npi);
-            docName = docName.text(drFullName);
+            global.docName.push(drFullName);
+            //        let drSlug = results[i].profile.slug;
+            //        global.docSlug.push(drSlug);
+            global.docNPI.push(results[i].npi);
+
             // display doctors
-            //    let p1 = $("<p class='para'>").text(drFullName);
-            docDiv.append(docImg).append("<br>").append(docName);
+            let p1 = $("<p class='para'>").text(drFullName);
+            docDiv.append(docImg).append("<br>").append(p1);
 
             //set up address
 
             let practice = results[i].practices.length;
             let street = " ";
             let city = " ";
-            let stateCode = " ";
+            let state = " ";
             let zipCode = " ";
             if (practice !== 0) {
                 let street = results[i].practices[0].visit_address.street;
                 let city = results[i].practices[0].visit_address.city;
-                let stateCode = results[i].practices[0].visit_address.state;
+                let state = results[i].practices[0].visit_address.state;
                 let zipCode = results[i].practices[0].visit_address.zip;
                 let p2 = $("<p class='para'>").text(street);
-                let p3 = $("<p class='para'>").text(city + "," + stateCode + " " + zipCode);
+                let p3 = $("<p class='para'>").text(city + "," + state + " " + zipCode);
                 docDiv.append(p2).append(p3);
             }
 
@@ -430,8 +333,9 @@ $(document).ready(function () {
                 //    docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(ratingImg).append("<br><br>");
                 docDiv.append(ratingImg).append("<br><br>");
             }
-            $("#results").append(docDiv).innerHTML;
+            $("#results").append(docDiv);
+
         }
-        //        $("#results").append(docDiv).innerHTML;
+        //        $("#results").append(docDiv);
     }
 });
