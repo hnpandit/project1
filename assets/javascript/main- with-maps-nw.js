@@ -5,6 +5,11 @@ $(document).ready(function () {
     // specialties is object that is an array of specialities the user can search for (so can use fuse)
 
     let state = {
+        platform:"",
+        maptypes:"",
+        map:"",
+        longitude: 0,
+        latitude: 0,
         validform: true,
         specialObj: [
             { specialty: "internist" }, { specialty: "cardiologist" },
@@ -202,6 +207,7 @@ $(document).ready(function () {
 
             $("#map").empty();
             $("#map").append(docDiv);
+            displayMap(drLat, drLong);
 
 
         })
@@ -210,6 +216,29 @@ $(document).ready(function () {
                 return;
             });
     }
+    function displayMap(drLat, drLong) {
+        // Initialize platform
+        state.platform = new H.service.Platform({
+            'app_id': 'w7UvEiaWJksvqgcOea4n',
+            'app_code': 'HqRyRkE_CPdtcF-Qo5lXdA',
+            'useHTTPS': true,
+            'useCIT': true
+        });
+
+        // Obtain the default map types from the platform object
+        state.maptypes = state.platform.createDefaultLayers();
+
+        // Instantiate (and display) a map object:
+        state.map = new H.Map(
+            //      document.getElementById('mapContainer'),
+            state.maptypes.normal.map,
+            {
+                zoom: 10,
+                center: { lng: drLong, lat: drLat }
+            });
+    }
+
+
 
     // this function is called to validate the input data
 
@@ -347,7 +376,7 @@ $(document).ready(function () {
 
         let docDiv = $("<div>");
 
-        // retrieve doctors from api to display
+        // retrieve data from api to display
         //save doctor's name and NPI in order to retrieve additional information if doctor is selected
 
         for (let i = 0; i < maxLength; i++) {
