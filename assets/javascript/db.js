@@ -4,6 +4,7 @@
 // January 12, 2019
     
 // https://console.firebase.google.com/project/healthysearch-48e3f/database/healthysearch-48e3f/data/
+// Reference: https://firebase.google.com/docs/database/web/read-and-write
 
 // Initialize Firebase
 
@@ -21,18 +22,18 @@ firebase.initializeApp(config);
 database = firebase.database();
 
 var user = {
-      userName:"",
-      userFirstName:"",
-      userLastName:"",
-      userEmail:"",
-      userCell:"",
-      userZip:""
+  userName:"",
+  userFirstName:"",
+  userLastName:"",
+  userEmail:"",
+  userCell:"",
+  userZip:""
 }
 
 var favorites = {
   userName:"",
   doctorName:"",
-  betterDoctorUID:""
+  doctorID:""
 }
 
 function addUser(userName, FirstName, LastName, Email, Cell, Zip)
@@ -47,17 +48,20 @@ function addUser(userName, FirstName, LastName, Email, Cell, Zip)
   database.ref("/users").push(user);  
 }
 
-function addFavorite(userName, Doctor, DoctorUID)
+function addFavorite(userName, doctorName, doctorID)
 {
   favorites.userName = userName;
-  favorites.doctorName = Doctor;
-  favorites.betterDoctorUID = DoctorUID;
+  favorites.doctorName = doctorName;
+  favorites.doctorID = doctorID;
 
   database.ref("/favorites").push(favorites);  
 }
 
-function populateData()
+function initialzeData()
 {
+    var rootRef = database.ref();
+    rootRef.remove();
+
     addUser("hpandit", "Himanshu", "Pandit", "hp@rcb.com", "(111) 111-1111", "08816");
     addUser("icohen", "Ilene", "Cohen", "ic@rcb.com", "(222) 222-2222", "07608");
     addUser("dsires", "Dan", "Sires", "ds@rcb.com", "(333) 333-3333", "90210");
@@ -69,18 +73,50 @@ function populateData()
     addFavorite("dsires", "Dr. John Doe", "5bd1d56611167f74712548bbb968e9d8");
     addFavorite("jduran", "Dr. Miin Mathew", "5bd1d56611167f74712548bbb968e9d8"); 
 
-    var newKey = firebase.database().ref().child('favorites').push().key;
-    console.log(newKey);
+    $("#dataContainer").empty();
+    displayUsers();
+    displayFavorites();
+}
 
-    favorites.userName = "hpandit";
-    favorites.doctorName = "New Doctor";
-    favorites.DoctorUID = "SomeUID";
-    var updates = {};
-    updates['/favorites/' + newKey + '/'] = favorites;
-    database.ref().update(updates);
+function displayUsers()
+{
+    var ref = firebase.database().ref("/users");
+    ref.on("value", function(snapshot) 
+    {  
+      var users = [];
+      users = snapshotToArray(snapshot);
+      $("#dataContainer").append("Displaying Users" + "<br>");
+      for (i=0; i<users.length; i++)
+      {
+        $("#dataContainer").append(users[i].userFirstName);
+        $("#dataContainer").append("<br>");
+      }
+      }, function (error) {
+        console.log("Error: " + error.code);
+    });
+}
+
+function displayFavorites()
+{
+    var ref = firebase.database().ref("/favorites");
+
+    ref.on("value", function(snapshot) 
+    {  
+      var favorites = [];
+      favorites = snapshotToArray(snapshot);
+      $("#dataContainer").append("Displaying User Favorites" + "<br>");
+      for (i=0; i<favorites.length; i++)
+      {
+        $("#dataContainer").append(favorites[i].userName + "(" + favorites[i].doctorName + ")");
+        $("#dataContainer").append("<br>");
+      }
+      }, function (error) {
+        console.log("Error: " + error.code);
+    });
 }
 
 function snapshotToArray(snapshot) {
+  
   var returnArr = [];
 
   snapshot.forEach(function(childSnapshot) {
@@ -93,24 +129,103 @@ function snapshotToArray(snapshot) {
   return returnArr;
 };
 
-function getUserZip()
+function login(txtUserName, txtPassword)
 {
+    console.log("login module called" + txtUserName + "P " + txtPassword);
+    var ref = firebase.database().ref("/users");
+    var userFound = false;
 
-  var ref = firebase.database().ref("/users");
+    ref.on("value", function(snapshot) 
+    {  
+      var users = [];
+      users = snapshotToArray(snapshot);
+      for (i=0; i<users.length; i++)
+      {
+        if (txtUserName === users[i].userName)
+        {
+            if (txtPassword === "password")
+            {
+              userFound = true;
+              console.log("login is good.");
+              return true;
+              console.log("This should not print.");
+            }
+        }
+      }
+      }, function (error) {
+        console.log("Error: " + error.code);
+        return false;
+    });
+    return false;
+}
+
+$("#initializeDatabase").on("click", function(event)
+{
+  $("#dataContainer").empty();
+  displayUsers();
+  displayFavorites();
+})
+
+$("#populateDatabase").on("click", function(event)
+{
+  initialzeData();
+})
+
+$("#btnLogin").on("click", function(event)
+{
+  console.log("Login button clicked");
+  // Get User Input
+  var txtUserName = $("#txtUserName").val().trim();
+  var txtPassword = $("#txtPassword").val().trim();
+
+  if (login(txtUserName, txtPassword) === true)
+  {
+    console.log("Login successful");
+    // We can change Login button to say Logout user
+  }
+  else
+  {
+    console.log("Login failure");
+  }
+})
+
+$("#btnAddDoctor").on("click", function(event)
+{
+    console.log("Add Doctor button clicked");
+
+    var txtUserName = $("#txtUserName").val().trim();
+    var txtDoctorID = $("#txtDoctorID").val().trim();
+
+    var newKey = firebase.database().ref().child('favorites').push().key;
+
+    favorites.userName = txtUserName;
+    favorites.doctorName = "Dr" + txtDoctorID;
+    favorites.doctorID = txtDoctorID;
+    var updates = {};
+    updates['/favorites/' + newKey + '/'] = favorites;
+    database.ref().update(updates);
+})
+
+$("#btnRemoveDoctor").on("click", function(event)
+{
+  console.log("Remove Doctor button clicked");
+
+  var txtUserName = $("#txtUserName").val().trim();
+  var txtDoctorID = $("#txtDoctorID").val().trim();
+
+  var ref = firebase.database().ref("/favorites");
 
   ref.on("value", function(snapshot) {
-     var users = [];
-     users = snapshotToArray(snapshot);
-     for (i=0; i<users.length; i++)
+     var favorites = [];
+     favorites = snapshotToArray(snapshot);
+     for (i=0; i<favorites.length; i++)
      {
-      console.log(users[i].userName);
-      console.log(users[i].key);
-      database.ref("/users/" + users[i].key).remove();
+      if ((txtUserName === favorites[i].userName) && (txtDoctorID === favorites[i].doctorID))
+      {
+        database.ref("/favorites/" + favorites[i].key).remove();
+      }
      }
   }, function (error) {
      console.log("Error: " + error.code);
   });
-}
-
-getUserZip();
-//populateData();
+})
