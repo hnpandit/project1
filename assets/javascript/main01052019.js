@@ -1,8 +1,8 @@
 $(document).ready(function () {
 
     // state is an object that holds the global variables
-    // drUID is an object that hold the doctor's first name, last name, and uid
-    // specialties is an array of specialities the user can search for
+    // doctors is an array that hold the doctor's first name, last name, npi (unique number assigned to a doctor), latitude and longitude of doctors location
+    // specialties is object that is an array of specialities the user can search for (so can use fuse)
 
     let state = {
         validform: true,
@@ -23,6 +23,7 @@ $(document).ready(function () {
             { specialty: "general-practitioner" }, { specialty: "general-surgeon" },
             { specialty: "gynecologist" }, { specialty: "immunopathologist" },
             { specialty: "podiatrist" }, { specialty: "gastroenterologist" }],
+
         usStates: ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN",
             "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
             "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "UT", "VT", "VA",
@@ -32,18 +33,18 @@ $(document).ready(function () {
         stateCode: "",
         zipCode: "",
         insurance: "",
-        docName: [],
-        docNPI: []
+        doctors: []
     }
 
+    //search for doctors based on user input
 
     $("#search-button").on("click", function (event) {
         event.preventDefault();
 
-        //empty doctor name and npi arrays
-        for (let i = state.docName.length; i > 0; i--) {
-            state.docName.pop();
-            state.docNPI.pop();
+        //empty doctors array
+        for (let i = state.doctors.length; i > 0; i--) {
+            state.doctors.pop();
+
         }
         // get input from form
 
@@ -72,6 +73,7 @@ $(document).ready(function () {
 
 
         findDoctors(state.specialty, state.stateCode, state.zipCode, state.insurance);
+
         $("#map").empty();
         $("#map").append("Map");
 
@@ -84,8 +86,8 @@ $(document).ready(function () {
         //search better doctors using NPI to get doctor information
 
         let docValue = $(this).attr("value");
-        let drName = state.docName[docValue];
-        let drNPI = state.docNPI[docValue];
+        let drName = state.doctors[docValue].docName;
+        let drNPI = state.doctors[docValue].docNPI;
         console.log(docValue + " " + drName + " " + drNPI);
         getDoctorInfo(drNPI, drName);
 
@@ -93,11 +95,9 @@ $(document).ready(function () {
 
     });
 
-
+    //this function obtains the doctor information from better doctors API; if there is an error with the call, it will return
     function getDoctorInfo(drNPI, drName) {
-        console.log("in get doctor " + drNPI + " " + drName);
         let queryURL = "https://api.betterdoctor.com/2016-03-01/doctors/npi/" + drNPI + "?user_key=c73e643548e8388f4f7cf67fbc5fbc38";
-        console.log(queryURL);
         $.ajax({
             url: queryURL,
             method: "GET"
@@ -114,7 +114,6 @@ $(document).ready(function () {
             docImg.addClass("doctor doc-pic-size");
             docImg.attr("doc-photo", results.profile.image_url);
             docImg.attr("src", results.profile.image_url);
-            //            let p1 = $("<p class='para'>").append("<a href='indexdr.html' target='_blank'>").text(drName);
             let p1 = $("<p>").text(drName);
             docDiv = docDiv.append(docImg).append(p1);
 
@@ -124,7 +123,6 @@ $(document).ready(function () {
             let city = " ";
             let state = " ";
             let zipCode = " ";
-            console.log("pracdtice length" + practiceLength);
             if (practiceLength !== 0) {
                 for (let i = 0; i < practiceLength; i++) {
                     let street = results.practices[i].visit_address.street;
@@ -133,8 +131,6 @@ $(document).ready(function () {
                     let zipCode = results.practices[i].visit_address.zip;
                     let p2 = $("<p class='para'>").text(street);
                     let p3 = $("<p class='para'>").text(city + "," + state + " " + zipCode);
-                    console.log(street + city + state + zipCode);
-
                     docDiv = docDiv.append(p2).append(p3);
 
                     //set up phone numbers
@@ -147,28 +143,25 @@ $(document).ready(function () {
                             phoneNo = "(" + phoneNo.substr(0, 3) + ")" + phoneNo.substr(3, 3) + "-" + phoneNo.substr(6, 4);
                             let p4 = $("<p class='para'>").text(phoneType + ": " + phoneNo);
                             docDiv = docDiv.append(p4);
-                            console.log(phoneType + ": " + phoneNo);
 
                         }
                     }
+
                     //set up office hours
                     let offHrLength = results.practices[i].office_hours.length;
                     if (offHrLength !== 0) {
                         for (j = 0; j < offHrLength; j++) {
                             let p5 = $("<p class ='para'>").text(results.practices[i].office_hours[j]);
                             docDiv = docDiv.append(p5);
-                            console.log(results.practices[i].office_hours[j]);
                         }
                     }
                 }
             }
             // obtain specialties
-            console.log("specialty length " + results.specialties.length);
             if (results.specialties.length !== 0) {
                 p5 = $("<p class ='para'>").text("Specialties: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.specialties.length; i++) {
-                    console.log("specialties: " + results.specialties[i].name);
                     docDiv = docDiv.append(results.specialties[i].name).append("<br>");
                 }
             }
@@ -177,23 +170,21 @@ $(document).ready(function () {
                 p5 = $("<p class ='para'>").text("Education: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.educations.length; i++) {
-                    console.log("education  " + results.educations[i].school);
                     docDiv = docDiv.append(results.educations[i].school).append("<br>");
                 }
             }
 
             // obtain bio
-            p5 = $("<p class ='para'>").text("Bio: ");
-            docDiv = docDiv.append(p5);
-            console.log(results.profile.bio);
-            docDiv = docDiv.append(results.profile.bio).append("<br>");
-
+            if (results.profile.bio.length !== 0) {
+                p5 = $("<p class ='para'>").text("Bio: ");
+                docDiv = docDiv.append(p5);
+                docDiv = docDiv.append(results.profile.bio).append("<br>");
+            }
             // obtain languages
             if (results.profile.languages.length !== 0) {
                 p5 = $("<p class ='para'>").text("Languages: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.profile.languages.length; i++) {
-                    console.log("languages " + results.profile.languages[i].name);
                     docDiv = docDiv.append(results.profile.languages[i].name);
                 }
             }
@@ -203,12 +194,9 @@ $(document).ready(function () {
                 p5 = $("<p class ='para'>").text("Insurance: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.insurances.length; i++) {
-                    console.log(results.insurances[i].insurance_plan.name);
                     docDiv = docDiv.append(results.insurances[i].insurance_plan.name);
                 }
             }
-            //        $("#results").empty();
-            //        $("#results").append(docDiv);
             $("#map").empty();
             $("#map").append(docDiv);
 
@@ -250,26 +238,22 @@ $(document).ready(function () {
             ]
         };
         if (specialty !== "") {
-            //        if ( state.specialObj.includes(specialty)) {
+            //        if (state.specialObj.includes(specialty)) {
             // use fuse.js to determine if there is a close match to a specialty
             let fuse = new Fuse(state.specialObj, options);
             let fuseResult = fuse.search(specialty);
             if (fuseResult.length !== 0) {
-
                 state.specialty = fuseResult[0].item.specialty;
-                console.log("specialty " + state.specialty);
             }
             else {
                 $("#specialist-input").val("");
                 state.validform = false;
             }
-            //        }
         }
         //check that a valid state was entered
-        console.log(stateCode);
         if (stateCode !== "") {
             if (!state.usStates.includes(stateCode)) {
-                //     let errorMsg = "Please Enter Specialty";
+                //     let errorMsg = "Please Enter valid stategit me";
                 //    document.getElementById("specialty-input") = errorMsg;
                 $("#state-input").val("");
                 state.validform = false;
@@ -373,17 +357,19 @@ $(document).ready(function () {
             let drLastName = results[i].profile.last_name.trim();
             let drFullName = drFirstName + " " + drLastName;
             let docName = $("<p>");
-            //        let docName = $("<a href='indexdr.html' target='_blank'>");
 
             docName.addClass("doctor doctorName");
             docName.attr("doc-name", drFullName);
             docName.attr("value", i);
-            state.docName.push(drFullName);
-            state.docNPI.push(results[i].npi);
+
+            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, doclat: results[i].lat, doclong: results[i].lon });
+
+
             docName = docName.text(drFullName);
             // display doctors
             //    let p1 = $("<p class='para'>").text(drFullName);
-            docDiv.append(docImg).append("<br>").append(docName);
+            docDiv = $("<div class='docdiv'>");
+            docDiv = docDiv.append(docImg).append("<br>").append(docName);
 
             //set up address
 
