@@ -75,7 +75,7 @@ $(document).ready(function () {
         findDoctors(state.specialty, state.stateCode, state.zipCode, state.insurance);
 
         $("#map").empty();
-        $("#map").append("Map");
+        // $("#map").append("Map");
 
     });
 
@@ -112,11 +112,14 @@ $(document).ready(function () {
 
             let results = response.data;
             let docDiv = $("<div>");
-            let docImg = $("<img id='imgStyle'>");
+
+
+                /*----------changed ID to class---------------*/
+            let docImg = $("<img class='imgStyle'>");
             docImg.addClass("doctor doc-pic-size");
             docImg.attr("doc-photo", results.profile.image_url);
             docImg.attr("src", results.profile.image_url);
-            let p1 = $("<p>").text(drName);
+            let p1 = $("<h2>").text(drName);
             docDiv = docDiv.append(docImg).append(p1);
 
             // set up doctor address
@@ -131,8 +134,13 @@ $(document).ready(function () {
                     let city = results.practices[i].visit_address.city;
                     let state = results.practices[i].visit_address.state;
                     let zipCode = results.practices[i].visit_address.zip;
-                    let p2 = $("<p class='para'>").text(street);
-                    let p3 = $("<p class='para'>").text(city + "," + state + " " + zipCode);
+
+                    /*-----------------street-----------added a dots right here------*/
+                    let p2 = $("<p class='street'>").text("•" + " " + street);
+
+
+                    /*----------------city-street-zipcode-----------------*/
+                    let p3 = $("<p class='city-street-zipcode'>").text(city + "," + state + " " + zipCode);
                     docDiv = docDiv.append(p2).append(p3);
 
                     //set up phone numbers
@@ -143,7 +151,9 @@ $(document).ready(function () {
                             let phoneType = results.practices[i].phones[j].type.trim();
                             let phoneNo = results.practices[i].phones[j].number.trim();
                             phoneNo = "(" + phoneNo.substr(0, 3) + ")" + phoneNo.substr(3, 3) + "-" + phoneNo.substr(6, 4);
-                            let p4 = $("<p class='para'>").text(phoneType + ": " + phoneNo);
+
+                            /*-----------------phone-----------------*/
+                            let p4 = $("<p class='phone'>").text(phoneType + ": " + phoneNo);
                             docDiv = docDiv.append(p4);
 
                         }
@@ -153,7 +163,9 @@ $(document).ready(function () {
                     let offHrLength = results.practices[i].office_hours.length;
                     if (offHrLength !== 0) {
                         for (j = 0; j < offHrLength; j++) {
-                            let p5 = $("<p class ='para'>").text(results.practices[i].office_hours[j]);
+
+                            /*-----------------officehours-----------------*/
+                            let p5 = $("<p class ='officehours'>").text(results.practices[i].office_hours[j]);
                             docDiv = docDiv.append(p5);
                         }
                     }
@@ -161,7 +173,10 @@ $(document).ready(function () {
             }
             // obtain specialties
             if (results.specialties.length !== 0) {
-                p5 = $("<p class ='para'>").text("Specialties: ");
+
+
+                /*-----------------bold-----------------*/
+                p5 = $("<p class ='bold'>").text("Specialties: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.specialties.length; i++) {
                     docDiv = docDiv.append(results.specialties[i].name).append("<br>");
@@ -169,7 +184,9 @@ $(document).ready(function () {
             }
             //obtain education
             if (results.educations.length !== 0) {
-                p5 = $("<p class ='para'>").text("Education: ");
+
+                /*-----------------bold-----------------*/
+                p5 = $("<p class ='bold'>").text("Education: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.educations.length; i++) {
                     docDiv = docDiv.append(results.educations[i].school).append("<br>");
@@ -178,13 +195,17 @@ $(document).ready(function () {
 
             // obtain bio
             if (results.profile.bio.length !== 0) {
-                p5 = $("<p class ='para'>").text("Bio: ");
+
+                /*-----------------bold-----------------*/
+                p5 = $("<p class ='bold'>").text("Bio: ");
                 docDiv = docDiv.append(p5);
                 docDiv = docDiv.append(results.profile.bio).append("<br>");
             }
             // obtain languages
             if (results.profile.languages.length !== 0) {
-                p5 = $("<p class ='para'>").text("Languages: ");
+
+                /*-----------------bold-----------------*/
+                p5 = $("<p class ='bold'>").text("Languages: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.profile.languages.length; i++) {
                     docDiv = docDiv.append(results.profile.languages[i].name);
@@ -193,11 +214,18 @@ $(document).ready(function () {
 
             //obtain insurance plans
             if (results.insurances.length !== 0) {
-                p5 = $("<p class ='para'>").text("Insurance: ");
+
+                /*-----------------bold-----------------*/
+                p5 = $("<p class ='bold'>").text("Insurance: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.insurances.length; i++) {
-                    docDiv = docDiv.append(results.insurances[i].insurance_plan.name);
+
+
+                    docDiv = docDiv.append(results.insurances[i].insurance_plan.name + " " + "•" + " ");
+
                 }
+
+                document.getElementById("")
             }
 
             $("#map").empty();

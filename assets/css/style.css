@@ -26,6 +26,8 @@ input::placeholder {
     grid-template-rows: repeat(8, minmax(100px, auto));
     margin: 0 auto;
     display: grid;
+
+    letter-spacing: 1px;
 }
 #content div {
     padding: 10px;
@@ -70,3 +72,61 @@ input::placeholder {
     grid-row: 8/9;
     background-color: rgb(53, 78, 78);
 }
+
+
+
+
+
+
+
+
+/*------------------docs page css------------------*/
+
+.bold {
+    
+    font-weight: bold;
+    font-size: 25px;
+    color: green;
+}
+
+.phone {
+    color: red;
+    line-height: .5;
+}
+
+h2 {
+    color: white;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.street {
+    color: orange;
+    
+}
+
+.city-street-zipcode {
+    color: royalblue;
+}
+
+#map {
+    color: yellow;
+    line-height: 1.6;
+}
+
+.imgStyle {
+    height: 60%;
+    width: 50%;
+    border-radius: 8px;
+}
+
+#imgStyle {
+    border-radius: 8px;
+}
+
+
+
+
+
+
+
