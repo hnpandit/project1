@@ -47,6 +47,9 @@ input {
 input::placeholder {
     font-size: 16px;
 }
+p {
+    margin: 5px;
+}
 /* ----------------------------ID'S---------------------------- */
 #results {
     height: 600px;
@@ -141,6 +144,7 @@ input::placeholder {
 
 .docdiv {
     border: 1px solid black;
+    /* border-radius: 15px; */
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
@@ -191,7 +195,7 @@ input::placeholder {
 }
 
 h2 {
-    color: white;
+    color: black;
     font-weight: bold;
     font-size: 40px;
 }
