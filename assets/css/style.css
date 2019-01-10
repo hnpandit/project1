@@ -67,6 +67,14 @@ input::placeholder {
     border-radius: 5px;
     font-size: 15px;
 }
+#my-favorites {
+    float: left;
+    margin: 2px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 15px;
+}
 #search-button {
     cursor: pointer;
 }
