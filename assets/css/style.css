@@ -33,7 +33,6 @@ body {
     to   { opacity: 1; }
 }
 h1 {
-    /* margin: 70px; */
     font-size: 50px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     color: white;
@@ -58,7 +57,15 @@ input::placeholder {
      height: 600px;
      width: 100%;
      overflow: auto;
+      line-height: 1.6;
+   
  } 
+
+#content div {
+    padding: 10px;
+
+}
+
 #login-button {
     float: right;
     margin: 2px;
@@ -79,17 +86,7 @@ input::placeholder {
     cursor: pointer;
 }
 /* --------------------------CLASSES--------------------- */
-/* .content {
-    max-width: auto;
-    width: inherit;
-    height: inherit;
-    max-height: 100%;
-    grid-gap: 10px;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, minmax(100px, auto));
-    margin: 0 auto;
-    display: grid;
-} */
+
 .content div {
     padding: 1px;
 
@@ -117,12 +114,7 @@ input::placeholder {
     position: sticky;
     top: 0;
 }
-/* .sticky-map {
-    position: -webkit-sticky;
-    position: fixed;
-    /* top: 110px; */
-    /* padding-top: 120px; */
-/* } */ 
+
 .search-results {
     grid-column: 1fr;
     /* grid-row: 4/8; */
@@ -130,15 +122,12 @@ input::placeholder {
 }
 .map {
     grid-column: 1fr;
-    /* position: fixed; */
-    /* top: 0; */
-    /* grid-row: 4/8; */
+
 }
 .rating-pic-image {
     padding: 1px;
 }
 .footer {
-    /* grid-column: 1/5; */
     grid-column: 1fr;
     grid-row: 1fr;
     background-color: rgb(225, 235, 243);
@@ -151,7 +140,6 @@ input::placeholder {
 }
 
 .docdiv {
-    /* height: auto; */
     border: 1px solid black;
     display: grid;
     grid-template-columns: 1fr;
@@ -179,6 +167,52 @@ input::placeholder {
 .rating-pic-image {
     padding-bottom: 5px;
 }
+
+
+
+
+
+
+
+
+
+/*------------------docs page css------------------*/
+
+.bold {
+    
+    font-weight: bold;
+    font-size: 25px;
+    color: green;
+}
+
+.phone {
+    color: red;
+    line-height: .5;
+}
+
+h2 {
+    color: white;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.street {
+    color: orange;
+    
+}
+
+.city-street-zipcode {
+    color: royalblue;
+}
+
+
+
+.imgStyle {
+    height: 60%;
+    width: 50%;
+    border-radius: 8px;
+}
+
 
 
 
