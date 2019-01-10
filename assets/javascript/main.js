@@ -421,7 +421,6 @@ $(document).ready(function () {
             let stateCode = " ";
             let zipCode = " ";
             if (practice !== 0) {
-                state.doctors.push({ docName: drFullName, docNPI: results[i].npi, doclat: results[i].practices[0].lat, doclong: results[i].practices[0].lon });
                 let street = results[i].practices[0].visit_address.street;
                 let city = results[i].practices[0].visit_address.city;
                 let stateCode = results[i].practices[0].visit_address.state;
@@ -459,6 +458,8 @@ $(document).ready(function () {
                 //    docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(ratingImg).append("<br><br>");
                 docDiv.append(ratingImg);
             }
+            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, docStreet: street, docCity: city, docState: stateCode, docZip: zipCode, doclat: results[i].practices[0].lat, doclong: results[i].practices[0].lon });
+
             $("#results").append(docDiv).innerHTML;
         }
         //        $("#results").append(docDiv).innerHTML;
