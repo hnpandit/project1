@@ -420,16 +420,22 @@ $(document).ready(function () {
             let city = " ";
             let stateCode = " ";
             let zipCode = " ";
+            let doctorLat = 0;
+            let doctorLong = 0;
             if (practice !== 0) {
-                let street = results[i].practices[0].visit_address.street;
-                let city = results[i].practices[0].visit_address.city;
-                let stateCode = results[i].practices[0].visit_address.state;
-                let zipCode = results[i].practices[0].visit_address.zip;
+                street = results[i].practices[0].visit_address.street;
+                city = results[i].practices[0].visit_address.city;
+                stateCode = results[i].practices[0].visit_address.state;
+                zipCode = results[i].practices[0].visit_address.zip;
+                doctorLat = results[i].practices[0].lat;
+                doctorLong = results[i].practices[0].lon;
+                console.log("doctorLat " + doctorLat + "doctorlong = " + doctorLong);
                 let p2 = $("<p class='para'>").text(street);
                 let p3 = $("<p class='para'>").text(city + "," + stateCode + " " + zipCode);
                 docDiv.append(p2).append(p3);
             }
 
+            console.log(" after if doctorLat " + doctorLat + "doctorlong = " + doctorLong);
 
             // find better doctor rating
             let rating = "0";
@@ -458,11 +464,12 @@ $(document).ready(function () {
                 //    docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(ratingImg).append("<br><br>");
                 docDiv.append(ratingImg);
             }
-            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, docStreet: street, docCity: city, docState: stateCode, docZip: zipCode, doclat: results[i].practices[0].lat, doclong: results[i].practices[0].lon });
+            console.log(" before state doctorLat " + doctorLat + "doctorlong = " + doctorLong);
+
+            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, docStreet: street, docCity: city, docState: stateCode, docZip: zipCode, doclat: doctorLat, doclong: doctorLong});
 
             $("#results").append(docDiv).innerHTML;
         }
-        //        $("#results").append(docDiv).innerHTML;
     }
 });
 
