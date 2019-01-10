@@ -6,6 +6,7 @@ $(document).ready(function () {
 
     let state = {
         validform: true,
+        docNPID: "",
         specialObj: [
             { specialty: "internist" }, { specialty: "cardiologist" },
             { specialty: "dermatologist" }, { specialty: "oncologist" },
@@ -88,13 +89,20 @@ $(document).ready(function () {
         let docValue = $(this).children('img').attr("value");
         let drName = state.doctors[docValue].docName;
         let drNPI = state.doctors[docValue].docNPI;
+        state.docNPID = drNPI;
         let drLat = state.doctors[docValue].doclat;
         let drLong = state.doctors[docValue].doclong;
-        console.log(docValue + " " + drName + " " + drNPI);
         getDoctorInfo(drNPI, drName, drLat, drLong);
+    });
 
+    //Get favorite doctor NPID and store in firebase
+    $("#fav").on("click", function (event) {
+        addFavorite(state.docNPID);
+    });
 
-
+    //Get favorite doctor NPID and store in firebase
+    $("#my-favorites").on("click", function (event) {
+        displayFavorites();
     });
 
     //this function obtains the doctor information from better doctors API; if there is an error with the call, it will return
