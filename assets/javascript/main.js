@@ -230,7 +230,7 @@ $(document).ready(function () {
 
             $("#map").empty();
             displayMap(drLong, drLat);
-            $("#map").append(docDiv);
+            $("#map").prepend(docDiv);
 
 
         })
@@ -395,7 +395,7 @@ $(document).ready(function () {
             docName.attr("doc-name", drFullName);
             docName.attr("value", i);
 
-            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, doclat: results[i].practices[0].lat, doclong: results[i].practices[0].lon});
+            
 
             docName = docName.text(drFullName);
             // display doctors
@@ -411,6 +411,7 @@ $(document).ready(function () {
             let stateCode = " ";
             let zipCode = " ";
             if (practice !== 0) {
+                state.doctors.push({ docName: drFullName, docNPI: results[i].npi, doclat: results[i].practices[0].lat, doclong: results[i].practices[0].lon});
                 let street = results[i].practices[0].visit_address.street;
                 let city = results[i].practices[0].visit_address.city;
                 let stateCode = results[i].practices[0].visit_address.state;
@@ -469,7 +470,7 @@ function displayMap(longitude, latitude)
 
     // Instantiate (and display) a map object:
     var map = new H.Map (
-    document.getElementById('map-area'),
+    document.getElementById('map'),
     maptypes.normal.map,
     {
       zoom: 10,
