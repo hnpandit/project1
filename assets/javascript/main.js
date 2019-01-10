@@ -114,13 +114,15 @@ $(document).ready(function () {
             let docDiv = $("<div>");
 
 
-                /*----------changed ID to class---------------*/
+            /*----------changed ID to class---------------*/
+            let favBtn = $("<button>").text('Favorite').addClass('fav').attr('id', 'fav-btn');
             let docImg = $("<img class='imgStyle'>");
             docImg.addClass("doctor doc-pic-size");
             docImg.attr("doc-photo", results.profile.image_url);
             docImg.attr("src", results.profile.image_url);
             let p1 = $("<h2>").text(drName);
             docDiv = docDiv.append(docImg).append(p1);
+            docDiv = docDiv.append(favBtn).append(docImg).append(p1);
 
             // set up doctor address
             let practiceLength = results.practices.length;
@@ -395,7 +397,7 @@ $(document).ready(function () {
             docName.attr("doc-name", drFullName);
             docName.attr("value", i);
 
-            
+
 
             docName = docName.text(drFullName);
             // display doctors
@@ -411,7 +413,7 @@ $(document).ready(function () {
             let stateCode = " ";
             let zipCode = " ";
             if (practice !== 0) {
-                state.doctors.push({ docName: drFullName, docNPI: results[i].npi, doclat: results[i].practices[0].lat, doclong: results[i].practices[0].lon});
+                state.doctors.push({ docName: drFullName, docNPI: results[i].npi, doclat: results[i].practices[0].lat, doclong: results[i].practices[0].lon });
                 let street = results[i].practices[0].visit_address.street;
                 let city = results[i].practices[0].visit_address.city;
                 let stateCode = results[i].practices[0].visit_address.state;
@@ -455,25 +457,106 @@ $(document).ready(function () {
     }
 });
 
-function displayMap(longitude, latitude)
-{
+function displayMap(longitude, latitude) {
     // Initialize platform
     var platform = new H.service.Platform({
-    'app_id': 'w7UvEiaWJksvqgcOea4n',
-    'app_code': 'HqRyRkE_CPdtcF-Qo5lXdA',
-    'useHTTPS': true,
-    'useCIT': true
+        'app_id': 'w7UvEiaWJksvqgcOea4n',
+        'app_code': 'HqRyRkE_CPdtcF-Qo5lXdA',
+        'useHTTPS': true,
+        'useCIT': true
     });
 
     // Obtain the default map types from the platform object
     var maptypes = platform.createDefaultLayers();
 
     // Instantiate (and display) a map object:
-    var map = new H.Map (
-    document.getElementById('map'),
-    maptypes.normal.map,
-    {
-      zoom: 10,
-      center: { lng: longitude, lat: latitude }
+    var map = new H.Map(
+        document.getElementById('map'),
+        maptypes.normal.map,
+        {
+            zoom: 10,
+            center: { lng: longitude, lat: latitude }
+        });
+}
+function myFavorites(drNPI) {
+    let queryURL = "https://api.betterdoctor.com/2016-03-01/doctors/npi/" + drNPI + "?user_key=c73e643548e8388f4f7cf67fbc5fbc38";
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+
+        // data gets back from API
+
+    }).then(function (response) {
+        // display data from favorite doctors using NPI number
+        //
+        let results = response.data;
+        let docDiv = $("<div>");
+
+        // retrieve doctors from api to display
+
+        let imgDiv = $("<div id='drImage'>");
+        let docImg = $("<img id='imgStyle'>");
+        docImg.addClass("doctor doc-pic-size");
+        docImg.attr("doc-photo", results.profile.image_url);
+        docImg.attr("src", results.profile.image_url);
+        docDiv = docDiv.append(imgDiv).append(docImg);
+
+        let drFirstName = results.profile.first_name.trim();
+        let drLastName = results.profile.last_name.trim();
+        let drFullName = drFirstName + " " + drLastName;
+        let docName = $("<p>");
+
+        docName.addClass("doctor doctorName");
+        docName.attr("doc-name", drFullName);
+
+        docName = docName.text(drFullName);
+        // display doctors
+        docDiv = $("<div>");
+        let docInfoDiv = $("<div class='docInfo'>");
+        docDiv = docDiv.append(docInfoDiv).append(docName);
+
+        //set up address
+
+        let practice = results.practices.length;
+        let street = " ";
+        let city = " ";
+        let stateCode = " ";
+        let zipCode = " ";
+        if (practice !== 0) {
+            let street = results.practices[0].visit_address.street;
+            let city = results.practices[0].visit_address.city;
+            let stateCode = results.practices[0].visit_address.state;
+            let zipCode = results.practices[0].visit_address.zip;
+            let p2 = $("<p class='para'>").text(street);
+            let p3 = $("<p class='para'>").text(city + "," + stateCode + " " + zipCode);
+            docDiv.append(p2).append(p3);
+        }
+
+
+        // find better doctor rating
+        let rating = "0";
+        let ratingImg = $("<img>");
+        for (j = 0; j < results.ratings.length; j++) {
+            if (results.ratings[j].provider == "betterdoctor") {
+                rating = results.ratings[j].rating;
+                ratingImg.addClass("rating-pic-image");
+                ratingImg.attr("src", results.ratings[j].image_url_small);
+                break;
+            }
+        }
+
+        // set up line to print if rating by better doctor is found
+        let p4;
+        if (rating === "0") {
+            rating = "Not Rated";
+            p4 = $("<p class='para'>").text(rating);
+            docDiv.append(p4).append("<br><br>");
+        }
+        else {
+            p4 = $("<p class='para'>").text("Rated: " + rating + " ");
+            docDiv.append(ratingImg).append("<br><br>");
+        }
+        $("#results").append(docDiv).innerHTML;
+
     });
 }
