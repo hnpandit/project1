@@ -89,7 +89,7 @@ $(document).ready(function () {
         let drName = state.doctors[docValue].docName;
         let drNPI = state.doctors[docValue].docNPI;
         let drLat = state.doctors[docValue].doclat;
-        let drLong = state.doctors[docValue].drLong;
+        let drLong = state.doctors[docValue].doclong;
         console.log(docValue + " " + drName + " " + drNPI);
         getDoctorInfo(drNPI, drName, drLat, drLong);
 
@@ -229,6 +229,7 @@ $(document).ready(function () {
             }
 
             $("#map").empty();
+            displayMap(drLong, drLat);
             $("#map").append(docDiv);
 
 
@@ -394,8 +395,7 @@ $(document).ready(function () {
             docName.attr("doc-name", drFullName);
             docName.attr("value", i);
 
-            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, doclat: results[i].lat, doclong: results[i].lon });
-
+            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, doclat: results[i].practices[0].lat, doclong: results[i].practices[0].lon});
 
             docName = docName.text(drFullName);
             // display doctors
@@ -453,3 +453,26 @@ $(document).ready(function () {
         //        $("#results").append(docDiv).innerHTML;
     }
 });
+
+function displayMap(longitude, latitude)
+{
+    // Initialize platform
+    var platform = new H.service.Platform({
+    'app_id': 'w7UvEiaWJksvqgcOea4n',
+    'app_code': 'HqRyRkE_CPdtcF-Qo5lXdA',
+    'useHTTPS': true,
+    'useCIT': true
+    });
+
+    // Obtain the default map types from the platform object
+    var maptypes = platform.createDefaultLayers();
+
+    // Instantiate (and display) a map object:
+    var map = new H.Map (
+    document.getElementById('map-area'),
+    maptypes.normal.map,
+    {
+      zoom: 10,
+      center: { lng: longitude, lat: latitude }
+    });
+}
