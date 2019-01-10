@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
     <!-- link to fuse.js search -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js"></script>
-
+ 
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
 
     <!-- HERE maps API Referecen -->
@@ -22,44 +22,58 @@
     <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
 </head>
 
-
 <body>
-    <div id="content">
+
+    <div class="content">
         <div class="header" id="header">
-            <button id="login-button" type="submit">Login</button>
-            <h1>Title</h1>
+            <button id="my-favorites" type="input">My Favorites</button>
+            <button id="login-button" type="input">Login</button>
+            <h1>Docfax</h1>
         </div>
-        <div class="search" id="search-area">
-            <form>
-                <input id="specialist-input" type="text" placeholder="Specialist Search">
-                <input id="state-input" type="text" placeholder="State">
-                <input id="zip-input" type="text" placeholder="Zip Code">
-                <input id="insurance-input" type="text" placeholder="Insurance">
-                <input id="search-button" type="submit" value="Search">
-            </form>
+        <div class="container">
+            
+            <div class="search sticky" id="search-area">
+                <form>
+                    <input id="specialist-input" type="text" placeholder="Specialist" onfocus="this.placeholder = ''"
+                        onblur="this.placeholder = 'Specialist'">
+                    <input id="state-input" type="text" placeholder="State" onfocus="this.placeholder = ''" onblur="this.placeholder = 'State'">
+                    <input id="zip-input" type="text" placeholder="Zip Code" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Zip Code'">
+                    <input id="insurance-input" type="text" placeholder="Insurance" onfocus="this.placeholder = ''"
+                        onblur="this.placeholder = 'Insurance'">
+                    <input id="search-button" type="submit" value="Search">
+                </form>
+            </div>
+            <div class="search-results" id="search-results">
+                
+                <div id="results">
+                    <!-- <p class="words">Hello</p> -->
+                </div>
+            </div>
+            <div class="map" id="map-area">
+                <div class="sticky-map" id="map"></div>
+            </div>
         </div>
-        <div class="search-results" id="search-results">Search results
-            <div id="results">results div</div>
+<!-- <<<<<<< stlying-landing-page -->
+        <div class="footer" id="footer">
+            <p>
+                A Web App by
+            </p>
+<!-- ======= -->
+      
+
+
+
+           
+
+
+
+
+
+<!-- >>>>>>> master -->
         </div>
-        <div class="map" id="map-area">
-            <div id="map">Map</div>
-
-
-
-            <!--added the favorite button  -->
-            <div id="map-area">
-                <button type="button" class="fav" id="fav">Favorite</button>
-            </div>   
-
-
-
-
-
-        </div>
-        <div class="footer" id="footer">Footer</div>
     </div>
     <!-- JavaScript -->
- <!--   <script src="assets/javascript/main.js"> </script> -->
+    <!--   <script src="assets/javascript/main.js"> </script> -->
     <script src="assets/javascript/main.js"> </script>
 
 
