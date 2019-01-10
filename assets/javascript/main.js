@@ -466,7 +466,7 @@ $(document).ready(function () {
             }
             console.log(" before state doctorLat " + doctorLat + "doctorlong = " + doctorLong);
 
-            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, docStreet: street, docCity: city, docState: stateCode, docZip: zipCode, doclat: doctorLat, doclong: doctorLong});
+            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, docStreet: street, docCity: city, docState: stateCode, docZip: zipCode, doclat: doctorLat, doclong: doctorLong, rating: ratingImg});
 
             $("#results").append(docDiv).innerHTML;
         }
