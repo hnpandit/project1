@@ -75,17 +75,17 @@ $(document).ready(function () {
         findDoctors(state.specialty, state.stateCode, state.zipCode, state.insurance);
 
         $("#map").empty();
-        $("#map").append("Map");
+        // $("#map").append("Map");
 
     });
 
     //get all doctor information
 
-    $("#results").on("click", ".doctor", function () {
+    $("#results").on("click", ".docdiv", function () {
         // get value of doctor clicked to determine which doctor to get additional info for using NPI number
         //search better doctors using NPI to get doctor information
 
-        let docValue = $(this).attr("value");
+        let docValue = $(this).children('img').attr("value");
         let drName = state.doctors[docValue].docName;
         let drNPI = state.doctors[docValue].docNPI;
         let drLat = state.doctors[docValue].doclat;
@@ -164,7 +164,7 @@ $(document).ready(function () {
                 p5 = $("<p class ='para'>").text("Specialties: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.specialties.length; i++) {
-                    docDiv = docDiv.append(results.specialties[i].name).append("<br>");
+                    docDiv = docDiv.append(results.specialties[i].name);
                 }
             }
             //obtain education
@@ -172,7 +172,7 @@ $(document).ready(function () {
                 p5 = $("<p class ='para'>").text("Education: ");
                 docDiv = docDiv.append(p5);
                 for (i = 0; i < results.educations.length; i++) {
-                    docDiv = docDiv.append(results.educations[i].school).append("<br>");
+                    docDiv = docDiv.append(results.educations[i].school);
                 }
             }
 
@@ -180,7 +180,7 @@ $(document).ready(function () {
             if (results.profile.bio.length !== 0) {
                 p5 = $("<p class ='para'>").text("Bio: ");
                 docDiv = docDiv.append(p5);
-                docDiv = docDiv.append(results.profile.bio).append("<br>");
+                docDiv = docDiv.append(results.profile.bio);
             }
             // obtain languages
             if (results.profile.languages.length !== 0) {
@@ -373,7 +373,7 @@ $(document).ready(function () {
             // display doctors
             //    let p1 = $("<p class='para'>").text(drFullName);
             docDiv = $("<div class='docdiv'>");
-            docDiv = docDiv.append(docImg).append("<br>").append(docName);
+            docDiv = docDiv.append(docImg).append(docName);
 
             //set up address
 
@@ -413,12 +413,12 @@ $(document).ready(function () {
                 rating = "Not Rated";
                 p4 = $("<p class='para'>").text(rating);
                 //         docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(p4);
-                docDiv.append(p4).append("<br><br>");
+                docDiv.append(p4);
             }
             else {
                 p4 = $("<p class='para'>").text("Rated: " + rating + " ");
                 //    docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(ratingImg).append("<br><br>");
-                docDiv.append(ratingImg).append("<br><br>");
+                docDiv.append(ratingImg);
             }
             $("#results").append(docDiv).innerHTML;
         }
