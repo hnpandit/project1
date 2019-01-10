@@ -74,7 +74,7 @@ $(document).ready(function () {
 
         findDoctors(state.specialty, state.stateCode, state.zipCode, state.insurance);
 
-        $("#map").empty();
+        $("#doc-details").empty();
         // $("#map").append("Map");
 
     });
@@ -230,9 +230,9 @@ $(document).ready(function () {
                 document.getElementById("")
             }
 
-            $("#map").empty();
+            $("#doc-details").empty();
             displayMap(drLong, drLat);
-            $("#map").prepend(docDiv);
+            $("#doc-details").prepend(docDiv);
 
 
         })
@@ -471,7 +471,7 @@ function displayMap(longitude, latitude) {
 
     // Instantiate (and display) a map object:
     var map = new H.Map(
-        document.getElementById('map'),
+        document.getElementById('doc-details'),
         maptypes.normal.map,
         {
             zoom: 10,

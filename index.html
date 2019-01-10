@@ -11,15 +11,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
     <!-- link to fuse.js search -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js"></script>
- 
+
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css" />
 
     <!-- HERE maps API Referecen -->
-    <ink rel="stylesheet" type="text/css" href="//js.api.here.com/v3/3.0/mapsjs-ui.css"/>
+    <ink rel="stylesheet" type="text/css" href="//js.api.here.com/v3/3.0/mapsjs-ui.css" />
     <script src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
     <script src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
     <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
     <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Thasadith:700" rel="stylesheet">
 </head>
 
 <body>
@@ -30,46 +31,48 @@
             <button id="login-button" type="input">Login</button>
             <h1>Docfax</h1>
         </div>
-        <div class="container">
-            
-            <div class="search sticky" id="search-area">
+
+            <div class="search" id="search-area">
                 <form>
                     <input id="specialist-input" type="text" placeholder="Specialist" onfocus="this.placeholder = ''"
                         onblur="this.placeholder = 'Specialist'">
                     <input id="state-input" type="text" placeholder="State" onfocus="this.placeholder = ''" onblur="this.placeholder = 'State'">
+                    <!-- <br> -->
                     <input id="zip-input" type="text" placeholder="Zip Code" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Zip Code'">
                     <input id="insurance-input" type="text" placeholder="Insurance" onfocus="this.placeholder = ''"
                         onblur="this.placeholder = 'Insurance'">
+                        <br>
                     <input id="search-button" type="submit" value="Search">
                 </form>
             </div>
+        <div class="container">
+
             <div class="search-results" id="search-results">
-                
+
                 <div id="results">
-                    <!-- <p class="words">Hello</p> -->
                 </div>
             </div>
             <div class="map" id="map-area">
-                <div class="sticky-map" id="map"></div>
+                <!-- <div id="info-detail"> -->
+
+                    <div id="doc-details"></div>
+                <!-- </div> -->
             </div>
         </div>
-<!-- <<<<<<< stlying-landing-page -->
         <div class="footer" id="footer">
             <p>
                 A Web App by
             </p>
-<!-- ======= -->
-      
-
-
-
-           
 
 
 
 
 
-<!-- >>>>>>> master -->
+
+
+
+
+
         </div>
     </div>
     <!-- JavaScript -->

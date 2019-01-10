@@ -1,54 +1,67 @@
 body {
     /* color: rgb(251, 248, 248); */
-    font-family: Arial, Helvetica, sans-serif;
+    /* font-family: Arial, Helvetica, sans-serif; */
+    /* font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; */
     text-align: center;
-    background: #ffffff00;
+    /* background: #ffffff00; */
 }
 @keyframes fadein {
-    from { opacity: 0; }
+    from { opacity: 0.1; }
     to   { opacity: 1; }
 }
 
-/* Firefox < 16 */
 @-moz-keyframes fadein {
-    from { opacity: 0; }
+    from { opacity: 0.1; }
     to   { opacity: 1; }
 }
 
-/* Safari, Chrome and Opera > 12.1 */
 @-webkit-keyframes fadein {
-    from { opacity: 0; }
+    from { opacity: 0.1; }
     to   { opacity: 1; }
 }
 
-/* Internet Explorer */
 @-ms-keyframes fadein {
-    from { opacity: 0; }
+    from { opacity: 0.1; }
     to   { opacity: 1; }
 }
 
-/* Opera < 12.1 */
 @-o-keyframes fadein {
-    from { opacity: 0; }
+    from { opacity: 0.1; }
     to   { opacity: 1; }
 }
 h1 {
-    font-size: 50px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    color: white;
+    /* padding-bottom: 10px; */
+    font-size: 42px;
+    /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+    font-family: 'Thasadith', sans-serif;
+
+    color: black;
+    /* padding-top: 10px; */
+    margin-bottom: 0px;
+    margin-top: 27;
+}
+button {
+    font-family: 'Thasadith', sans-serif;
+    
 }
 input {
-    margin: 30px;
-    border-radius: 5px;;
-    padding: 10px;
+    margin: 8px;
+    border-radius: 0px;
     font-size: 16px;
-    
+    display: inline;
+    padding: 2px;
+    font-family: 'Thasadith', sans-serif;
+    border: 1px solid #e9e9f1;
+    border-radius: 4px;
 }
 input::placeholder {
     font-size: 16px;
 }
 p {
-    margin: 5px;
+    margin: 0px;
+    font-size: 15px;;
+    width: auto;
+    height: auto;
 }
 /* ----------------------------ID'S---------------------------- */
 #results {
@@ -56,11 +69,13 @@ p {
     width: 100%;
     overflow: auto;
  }  
- #map {
+ #doc-details {
      height: 600px;
      width: 100%;
      overflow: auto;
-      line-height: 1.6;
+     line-height: 1.6;
+     /* border: 1px solid black; */
+     /* border-radius: 2px; */
    
  } 
 
@@ -71,23 +86,26 @@ p {
 
 #login-button {
     float: right;
-    margin: 2px;
+    margin: 0px;
     cursor: pointer;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 15px;
+    padding: 2px;
+    border-radius: 0px;
+    font-size: 16px;
 }
-#my-favorites {
+    #my-favorites {
     float: left;
-    margin: 2px;
+    margin: 0px;
     cursor: pointer;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 15px;
-}
-#search-button {
-    cursor: pointer;
-}
+    padding: 2px;
+    border-radius: 0px;
+    font-size: 16px;
+    }
+
+    #search-button {
+        cursor: pointer;
+        border: 2px solid white;
+        background-color: white;
+    }
 /* --------------------------CLASSES--------------------- */
 
 .content div {
@@ -97,26 +115,34 @@ p {
 .header {
     /* grid-column: 1/5; */
     /* grid-row: 1/3; */
-    background-color: rgb(152, 172, 197);
+    background-color: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 5px;
 }
 .container {
-    grid-template-rows: repeat(2, minmax(100px, auto));
+    grid-template-rows: 1fr;
     grid-template-columns: 1fr 1fr;
     display: grid;
+    grid-column: 2fr;
+    grid-row: 1fr;
+
+
 }
 .search {
     grid-column: 2fr;
     grid-row: 1fr;
-    background-color: rgb(237, 247, 255);
+    background-color: white
     grid-column-start: 1;
     grid-column-end: 3;
     /* width: 100%; */
+    justify-items: auto;
 }
-.sticky {
+/* .sticky {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
-}
+} */
 
 .search-results {
     grid-column: 1fr;
@@ -125,6 +151,7 @@ p {
 }
 .map {
     grid-column: 1fr;
+    
 
 }
 .rating-pic-image {
@@ -143,8 +170,9 @@ p {
 }
 
 .docdiv {
-    border: 1px solid black;
-    /* border-radius: 15px; */
+    font-family: 'Thasadith', sans-serif;
+    border: 3px solid rgb(200, 207, 212);
+    border-radius: 2px;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
@@ -157,16 +185,23 @@ p {
     padding: 10px;
     justify-items: center;
     width: auto;
-    box-shadow: 5px 5px rgb(145, 204, 243);
-    -webkit-animation: fadein 1.5s;
-    -moz-animation: fadein 2s; /* Firefox < 16 */
-    -ms-animation: fadein 2s; /* Internet Explorer */
-    -o-animation: fadein 2s; /* Opera < 12.1 */
-    animation: fadein 2s;
+    box-shadow: 5px 5px rgb(56, 56, 56);
+    -webkit-animation: fadein .5s;
+    -moz-animation: fadein .5s; /* Firefox < 16 */
+    -ms-animation: fadein .5s; /* Internet Explorer */
+    -o-animation: fadein .5s; /* Opera < 12.1 */
+    animation: fadein .5s;
 }
+/* .docdiv:nth-child(odd) {
+    box-shadow: 5px 5px rgba(142, 142, 142, 0.48);
+    
+
+} */
 .doc-pic-size {
     border-radius: 15%;
     padding-top: 5px;
+    height: 50px;
+    width: 50px;
 }
 .rating-pic-image {
     padding-bottom: 5px;
@@ -180,7 +215,7 @@ p {
 
 
 
-/*------------------docs page css------------------*/
+/*------------------doctors detail page css------------------*/
 
 .bold {
     
@@ -217,6 +252,9 @@ h2 {
     border-radius: 8px;
 }
 
+#info-detail {
+    border: 
+}
 
 
 
