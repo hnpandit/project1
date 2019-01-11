@@ -35,7 +35,9 @@ h1 {
     /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
     font-family: 'Thasadith', sans-serif;
 
-    color: black;
+    color: #61a8f3 ;
+    /* text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black; */
+    /* border: 1px solid #61a8f3; */
     /* padding-top: 10px; */
     margin-bottom: 0px;
     margin-top: 27;
@@ -91,15 +93,22 @@ p {
     padding: 2px;
     border-radius: 0px;
     font-size: 16px;
+    color: #61a8f3;
+    background-color: white;
+    
+    border: 1px;
 }
-    #my-favorites {
+#my-favorites {
     float: left;
     margin: 0px;
     cursor: pointer;
     padding: 2px;
     border-radius: 0px;
     font-size: 16px;
-    }
+    color: #61a8f3;
+    background-color: white;
+    border: 1px;
+}
 
     #search-button {
         cursor: pointer;
@@ -167,25 +176,26 @@ p {
     left: 0;
     padding: 1rem;
     text-align: center;
+    font-family: 'Thasadith', sans-serif;
 }
 
 .docdiv {
     font-family: 'Thasadith', sans-serif;
-    border: 3px solid rgb(200, 207, 212);
-    border-radius: 2px;
+    border: 3px solid #61a8f3;
+    border-radius: 5px;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     grid-gap: 5px; 
     background-color: white;
-    margin: 10px;
+    margin: 5px 0px 5px 0px;
     cursor: pointer;
     color: black;
     margin: 0px 5px 20px 5px;
     padding: 10px;
     justify-items: center;
     width: auto;
-    box-shadow: 5px 5px rgb(56, 56, 56);
+    /* box-shadow: 5px 5px rgba(178, 220, 253, 0.83); */
     -webkit-animation: fadein .5s;
     -moz-animation: fadein .5s; /* Firefox < 16 */
     -ms-animation: fadein .5s; /* Internet Explorer */
@@ -226,7 +236,6 @@ p {
 
 .phone {
     color: red;
-    line-height: .5;
 }
 
 h2 {
