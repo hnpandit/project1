@@ -7,6 +7,9 @@ $(document).ready(function () {
     let state = {
         validform: true,
         docNPID: "",
+        docName: "",
+        docLong: "",
+        docLat: "",
         specialObj: [
             { specialty: "internist" }, { specialty: "cardiologist" },
             { specialty: "dermatologist" }, { specialty: "oncologist" },
@@ -88,17 +91,24 @@ $(document).ready(function () {
 
         let docValue = $(this).children('img').attr("value");
         let drName = state.doctors[docValue].docName;
+        state.docName = drName;
         let drNPI = state.doctors[docValue].docNPI;
         state.docNPID = drNPI;
         let drLat = state.doctors[docValue].doclat;
+        state.docLat = drLat;
         let drLong = state.doctors[docValue].doclong;
+        state.docLong = drLong;
+        getDoctorInfo(drNPI, drName, drLat, drLong);
+    });
+
+    $("#favs").on("click", ".docdiv", function () {
+        //Get values from firebase
         getDoctorInfo(drNPI, drName, drLat, drLong);
     });
 
     //Get favorite doctor NPID and store in firebase
     $("#doc-details").on("click", "#fav-btn", function (event) {
-        console.log("in add favorite");
-        addFavorite(state.docNPID);
+        addFavorite(state.docNPID, state.docName, state.docLong, state.docLat);
     });
 
     //Get favorite doctor NPID and store in firebase
