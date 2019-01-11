@@ -416,6 +416,7 @@ $(document).ready(function () {
             //set up address
 
             let practice = results[i].practices.length;
+            let doctorImage;
             let street = " ";
             let city = " ";
             let stateCode = " ";
@@ -435,7 +436,6 @@ $(document).ready(function () {
                 docDiv.append(p2).append(p3);
             }
 
-            console.log(" after if doctorLat " + doctorLat + "doctorlong = " + doctorLong);
 
             // find better doctor rating
             let rating = "0";
@@ -464,9 +464,8 @@ $(document).ready(function () {
                 //    docDiv.append(docImg).append("<br>").append(p1).append(p2).append(p3).append(ratingImg).append("<br><br>");
                 docDiv.append(ratingImg);
             }
-            console.log(" before state doctorLat " + doctorLat + "doctorlong = " + doctorLong);
 
-            state.doctors.push({ docName: drFullName, docNPI: results[i].npi, docStreet: street, docCity: city, docState: stateCode, docZip: zipCode, doclat: doctorLat, doclong: doctorLong, rating: ratingImg});
+            state.doctors.push({docImage:doctorImage, docName: drFullName, docNPI: results[i].npi, docStreet: street, docCity: city, docState: stateCode, docZip: zipCode, doclat: doctorLat, doclong: doctorLong, rating: ratingImg});
 
             $("#results").append(docDiv).innerHTML;
         }
@@ -527,9 +526,9 @@ function myFavorites(drNPI) {
 
         docName = docName.text(drFullName);
         // display doctors
-        docDiv = $("<div>");
+        docDiv = $("<div class='docdiv'>");
         let docInfoDiv = $("<div class='docInfo'>");
-        docDiv = docDiv.append(docInfoDiv).append(docName);
+        docDiv = docDiv.append(docImg).append(docName);
 
         //set up address
 
