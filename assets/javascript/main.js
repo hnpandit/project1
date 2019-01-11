@@ -96,7 +96,8 @@ $(document).ready(function () {
     });
 
     //Get favorite doctor NPID and store in firebase
-    $("#fav").on("click", function (event) {
+    $("#doc-details").on("click", "#fav-btn", function (event) {
+        console.log("in add favorite");
         addFavorite(state.docNPID);
     });
 
@@ -119,18 +120,36 @@ $(document).ready(function () {
             // only one doctor can be returned as api search is on NPI
 
             let results = response.data;
-            let docDiv = $("<div>");
+        //    let docDiv = $("<div>");
 
 
             /*----------changed ID to class---------------*/
-            let favBtn = $("<button>").text('Favorite').addClass('fav').attr('id', 'fav-btn');
-            let docImg = $("<img class='imgStyle'>");
+            
+       //     let favBtn = $("<button>").text('Favorite').addClass('fav').attr('id', 'fav-btn');
+        /*  
+            let favBtn = $("<button>");
+            favBtn.addClass("fav");
+            favBtn.attr("id", "fav-btn");
+            favBtn.attr("value", "favorite");
+            docDiv = docDiv.append(favBtn);
             docImg.addClass("doctor doc-pic-size");
             docImg.attr("doc-photo", results.profile.image_url);
             docImg.attr("src", results.profile.image_url);
             let p1 = $("<h2>").text(drName);
             docDiv = docDiv.append(docImg).append(p1);
-            docDiv = docDiv.append(favBtn).append(docImg).append(p1);
+            let docImg = $("<img class='imgStyle'>");
+            */
+
+            let docDiv = $(`
+                <div>
+                    <button class="fav" id="fav-btn">Favorite</button>
+                     <img class="imgStyle doctor dic-pic-size" doc-photo="${results.profile.image_url}" src="${results.profile.image_url}">
+                     <h2>${drName}</h2>
+                </div>
+            `);
+
+
+
 
             // set up doctor address
             let practiceLength = results.practices.length;
@@ -235,7 +254,7 @@ $(document).ready(function () {
 
                 }
 
-                document.getElementById("")
+      //          document.getElementById("");
             }
 
             $("#doc-details").empty();
@@ -430,7 +449,6 @@ $(document).ready(function () {
                 zipCode = results[i].practices[0].visit_address.zip;
                 doctorLat = results[i].practices[0].lat;
                 doctorLong = results[i].practices[0].lon;
-                console.log("doctorLat " + doctorLat + "doctorlong = " + doctorLong);
                 let p2 = $("<p class='para'>").text(street);
                 let p3 = $("<p class='para'>").text(city + "," + stateCode + " " + zipCode);
                 docDiv.append(p2).append(p3);
