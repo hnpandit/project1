@@ -22,12 +22,18 @@ firebase.initializeApp(config);
 database = firebase.database();
 
 var favorites = {
-  doctorID:""
+  doctorID:"",
+  doctorName:"",
+  doctorLong:"",
+  doctorLat:""
 }
 
-function addFavorite(doctorID)
+function addFavorite(doctorID, doctorName, doctorLong, doctorLat)
 {
   favorites.doctorID = doctorID;
+  favorites.doctorName = doctorName;
+  favorites.doctorLong = doctorLong;
+  favorites.doctorLat = doctorLat;
 
   database.ref("/favorites").push(favorites);  
 }
@@ -37,15 +43,23 @@ function displayFavorites()
     var ref = firebase.database().ref("/favorites");
 
     $("#results").empty();
+    $("#doc-details").empty();
+
     ref.on("value", function(snapshot) 
     {  
       var favorites = [];
       favorites = snapshotToArray(snapshot);
+
       for (i=0; i<favorites.length; i++)
       {
-        console.log("Display details for doctor with NPID " + favorites[i].doctorID);
-        myFavorites(favorites[i].doctorID);
+        let strFavDoctor = "";
+        let favDiv = $("<div class='docdiv'>");
+        strFavDoctor = favorites[i].doctorName;
+        let para = $("<p class='para'>").text(strFavDoctor);
+        favDiv.append(para);
+        $("#results").append(favDiv).innerHTML;
       }
+
       }, function (error) {
         console.log("Error: " + error.code);
     });
