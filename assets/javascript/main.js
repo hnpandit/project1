@@ -571,7 +571,7 @@ function myFavorites(drNPI) {
             p4 = $("<p class='para'>").text("Rated: " + rating + " ");
             docDiv.append(ratingImg).append("<br><br>");
         }
+        
         $("#results").append(docDiv).innerHTML;
-
     });
 }
