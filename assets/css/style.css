@@ -39,8 +39,10 @@ h1 {
     /* text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black; */
     /* border: 1px solid #61a8f3; */
     /* padding-top: 10px; */
-    margin-bottom: 0px;
-    margin-top: 27;
+
+    margin: 10px 0px 10px 0px;
+    /* display: block; */
+    text-align: center;
 }
 button {
     font-family: 'Thasadith', sans-serif;
@@ -143,6 +145,7 @@ p {
     display: grid;
     grid-column: 2fr;
     grid-row: 1fr;
+    
 
 
 }
@@ -168,6 +171,7 @@ p {
 }
 .map {
     grid-column: 1fr;
+    /* position: fixed; */
     
 
 }
@@ -228,6 +232,17 @@ p {
     padding-bottom: 5px;
 }
 
+.far {
+    float: left;
+    /* margin: 3px; */
+    color: white;
+}
+.fas {
+    float: right;
+    /* margin: 3px; */
+    color: white;
+}
+
 
 
 
@@ -270,6 +285,7 @@ h2 {
     border-radius: 8px;
 }
 
+/* <<<<<<< juan_branch2 */
 .map {
     line-height: 1.5em;
     font-size: 20px;
@@ -300,6 +316,9 @@ style {
 .street, .phone {
     font-size: 20px;
 }
+/* #info-detail {
+    border: 
+} */
 
 
 
