@@ -34,8 +34,8 @@ h1 {
     font-size: 42px;
     /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
     font-family: 'Thasadith', sans-serif;
-
-    color: #61a8f3 ;
+    background-color: #61a8f3;
+    color: white;
     /* text-shadow: -2px 0 black, 0 1px black, 2px 0 black, 0 -1px black; */
     /* border: 1px solid #61a8f3; */
     /* padding-top: 10px; */
@@ -67,12 +67,12 @@ p {
 }
 /* ----------------------------ID'S---------------------------- */
 #results {
-    height: 600px;
+    height: 800px;
     width: 100%;
     overflow: auto;
  }  
  #doc-details {
-     height: 600px;
+     height: 800px;
      width: 100%;
      overflow: auto;
      line-height: 1.6;
@@ -93,21 +93,30 @@ p {
     padding: 2px;
     border-radius: 0px;
     font-size: 16px;
-    color: #61a8f3;
-    background-color: white;
-    
+    /* color: rgb(97, 168, 243); */
+    color: white;
+    /* background-color: white; */
+    background-color: #61a8f3;
+    /* border: 2px solid white; */
+    /* background-color: white; */
     border: 1px;
+ 
 }
 #my-favorites {
     float: left;
     margin: 0px;
     cursor: pointer;
     padding: 2px;
-    border-radius: 0px;
+    /* border-radius: 0px; */
     font-size: 16px;
-    color: #61a8f3;
-    background-color: white;
+    /* color: rgb(97, 168, 243); */
+    color: white;
+    /* background-color: white; */
+    background-color: #61a8f3;
+    /* border: 2px solid white; */
+    /* background-color: white; */
     border: 1px;
+    
 }
 
     #search-button {
@@ -124,9 +133,8 @@ p {
 .header {
     /* grid-column: 1/5; */
     /* grid-row: 1/3; */
-    background-color: white;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+    /* background-color: white; */
+    background-color: #61a8f3;
     padding: 5px;
 }
 .container {
@@ -141,7 +149,7 @@ p {
 .search {
     grid-column: 2fr;
     grid-row: 1fr;
-    background-color: white
+    background-color:  rgb(225, 235, 243);
     grid-column-start: 1;
     grid-column-end: 3;
     /* width: 100%; */
@@ -181,7 +189,7 @@ p {
 
 .docdiv {
     font-family: 'Thasadith', sans-serif;
-    border: 3px solid #61a8f3;
+    border: 2px solid #61a8f3;
     border-radius: 5px;
     display: grid;
     grid-template-columns: 1fr;
@@ -191,7 +199,7 @@ p {
     margin: 5px 0px 5px 0px;
     cursor: pointer;
     color: black;
-    margin: 0px 5px 20px 5px;
+    margin: 0px 0px 20px 0px;
     padding: 10px;
     justify-items: center;
     width: auto;
@@ -204,9 +212,12 @@ p {
 }
 /* .docdiv:nth-child(odd) {
     box-shadow: 5px 5px rgba(142, 142, 142, 0.48);
-    
+
 
 } */
+.doctorName {
+    font-size: 25px;
+}
 .doc-pic-size {
     border-radius: 15%;
     padding-top: 5px;
