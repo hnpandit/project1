@@ -256,30 +256,28 @@ p {
 .bold {
     
     font-weight: bold;
-    font-size: 25px;
-    color: green;
+    font-size: 30px;
+    color: black;
 }
 
 .phone {
-    color: red;
+    color: rgb(156, 31, 31);
 }
 
 h2 {
     color: black;
     font-weight: bold;
-    font-size: 40px;
+    font-size: 50px;
 }
 
 .street {
-    color: orange;
+    color: black;
     
 }
 
 .city-street-zipcode {
-    color: royalblue;
+    color: black;
 }
-
-
 
 .imgStyle {
     height: 60%;
@@ -287,6 +285,37 @@ h2 {
     border-radius: 8px;
 }
 
+/* <<<<<<< juan_branch2 */
+.map {
+    line-height: 1.5em;
+    font-size: 20px;
+    
+}
+
+.fav {
+    position: relative;
+    left: 50px;
+    border: none; 
+    transition: .5s;
+    padding: 5px 5px 5px 5px;
+    background-color:  rgb(225, 235, 243);
+    color: black;
+    font-size: 11px;
+}
+
+.fav:hover {
+    background: #61a8f3;
+    transition: .3s
+}
+
+style {
+    width: auto;
+}
+
+.city-street-zipcode, 
+.street, .phone {
+    font-size: 20px;
+}
 /* #info-detail {
     border: 
 } */
